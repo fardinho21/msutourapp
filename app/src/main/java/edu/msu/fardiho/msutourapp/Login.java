@@ -34,9 +34,10 @@ public class Login {
 
             @Override
             public void run() {
+
                 Server server = new Server();
                 InputStream stream = server.UserLogin(username, password);
-
+                //TODO: Change XML parser to JSON parser
                 boolean fail = stream == null;
                 if(!fail) {
                     try {

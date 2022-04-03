@@ -53,35 +53,27 @@ public class NewUserActivity extends AppCompatActivity {
             Toast.makeText(this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
         }
         else {
-
             new Thread(new Runnable() {
-
                 @Override
                 public void run() {
+
                     Server server = new Server();
                     InputStream stream = server.CreateUser(username, password);
-
+                    //TODO: Change XML parser to JSON parser
                     boolean fail = stream == null;
                     if(!fail) {
                         try {
-
-
                             XmlPullParser xml = Xml.newPullParser();
                             xml.setInput(stream, "UTF-8");
-
                             xml.nextTag();      // Advance to first tag
                             xml.require(XmlPullParser.START_TAG, null, "msutour");
                             String status = xml.getAttributeValue(null, "status");
                             if(status.equals("yes")) {
                                 GoTime();
-
-
                             } else if (status.equals("no")){
                                 String error = xml.getAttributeValue(null, "error");
                                 if (error.equals("username already exists")){
-
                                     runOnUiThread(new Runnable() {
-
                                         @Override
                                         public void run() {
                                             NoTime();
@@ -93,7 +85,6 @@ public class NewUserActivity extends AppCompatActivity {
                             else{
                                 fail = true;
                             }
-
                         } catch(IOException ex) {
                             fail = true;
                         } catch(XmlPullParserException ex) {
@@ -105,13 +96,8 @@ public class NewUserActivity extends AppCompatActivity {
                             }
                         }
                     }
-
                 }
-
-
             }).start();
-
-
         }
     }
 }

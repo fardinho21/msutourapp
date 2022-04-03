@@ -21,7 +21,7 @@ public class Server {
 
 
     //base url and login scripts go here
-    public static final String BASE_URL = "";
+    public static final String BASE_URL = "http://localhost:8080/";
     public static final String CREATE_USER = "";
     public static final String LOGIN = "";
     public static final String LOAD = "";
