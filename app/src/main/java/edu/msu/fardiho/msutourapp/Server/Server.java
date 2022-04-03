@@ -33,21 +33,16 @@ public class Server {
     //return types can change as we see fit
 
     public InputStream UserLogin(String username, String password) {
-
         String query = LOGIN + "?user=" + username + "&magic=" + MAGIC + "&pw=" + password;
-
         try {
             URL url = new URL(query);
-
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             int responseCode = conn.getResponseCode();
             if(responseCode != HttpURLConnection.HTTP_OK) {
                 return null;
             }
-
             InputStream stream = conn.getInputStream();
             return stream;
-
         } catch (MalformedURLException e) {
             // Should never happen
             return null;
@@ -58,19 +53,15 @@ public class Server {
 
     public InputStream CreateUser(String username, String password) {
         String query = CREATE_USER + "?user=" + username + "&magic=" + MAGIC + "&pw=" + password;
-
         try {
             URL url = new URL(query);
-
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             int responseCode = conn.getResponseCode();
             if(responseCode != HttpURLConnection.HTTP_OK) {
                 return null;
             }
-
             InputStream stream = conn.getInputStream();
             return stream;
-
         } catch (MalformedURLException e) {
             // Should never happen
             return null;
@@ -81,10 +72,8 @@ public class Server {
 
     //pulls all landmark locations
     public InputStream loadLandmarks() {
-
         //String query = LOAD_LANDMARKS;
         String query = LOAD + "?magic=" + MAGIC;
-
         try {
             URL url = new URL(query);
 
@@ -93,19 +82,14 @@ public class Server {
             if(responseCode != HttpURLConnection.HTTP_OK) {
                 return null;
             }
-
             InputStream stream = conn.getInputStream();
-
             return stream;
-
         } catch (MalformedURLException e) {
             // Should never happen
             return null;
         } catch (IOException ex) {
             return null;
         }
-
-
     }
 
     //crate landmark
@@ -144,9 +128,8 @@ public class Server {
             return -1;
         }
     }
-    //TODO : Replace with Parser
-    public static void skipToEndTag(XmlPullParser xml)
-            throws IOException, XmlPullParserException {
+    //TODO : Replace with JSON parser
+    public static void skipToEndTag(XmlPullParser xml) throws IOException, XmlPullParserException {
         int tag;
         do {
             tag = xml.next();
