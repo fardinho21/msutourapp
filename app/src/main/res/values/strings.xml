@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">msutourapp</string>
+    <string name="username">Enter Username </string>
+    <string name="password">Enter Password</string>
+    <string name="login">Login</string>
+
+
+    <string name="create_lm">Create Landmark</string>
+    <string name="lm_desc">Description</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
+    <string name="name">Name of Landmark</string>
+
+    <string name="longitude">Lon: </string>
+    <string name="latitude">Lat: </string>
+
+
+    <string name="title_activity_tour">Map</string>
+
+    <string name="google_maps_key">AIzaSyD7BqFGJOJWzrkqeNXa5-krGJGF3Oy3a5Q</string>
+
+    <string name="loggingin">Logging in...</string>
+    <string name="newUserTitle">Create a New User</string>
+    <string name="passwordConfirm">Confirm Password: </string>
+    <string name="usernameNew">Username: </string>
+    <string name="passwordNew">Password: </string>
+    <string name="creatingUser">Creating user...</string>
+    <string name="newUser">New User</string>
+
+    <string name="style_json">
+  [
+    {
+      \"featureType\": \"poi\",
+      \"elementType\": \"labels.icon\",
+      \"stylers\": [
+        {
+          \"visibility\": \"off\"
+        }
+      ]
+    },
+    {
+      \"featureType\": \"transit\",
+      \"elementType\": \"labels.icon\",
+      \"stylers\": [
+        {
+          \"visibility\": \"off\"
+        }
+      ]
+    }
+  ]
+  </string>
+
+</resources>
