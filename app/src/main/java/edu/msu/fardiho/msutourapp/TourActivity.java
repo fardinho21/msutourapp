@@ -242,53 +242,6 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void loadLandMarks() {
         Log.i("loadLandMarks", "called");
-        //1. call server to load xml containing landmarks
-        //2. for each landmark in xml create an landmark object, pin it, and put it on list
-        //3.place each landmark
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                InputStream lands = server.loadLandmarks();
-                //TODO: Change XML parser to JSON parser
-                try {
-                    XmlPullParser xml = Xml.newPullParser();
-                    xml.setInput(lands, "UTF-8");
-                    xml.nextTag();      // Advance to first tag
-                    xml.require(XmlPullParser.START_TAG, null, "msutour");
-                    xml.nextTag();
-                    xml.nextTag();
-                    xml.require(XmlPullParser.START_TAG, null, "landmarks");
-                    while(xml.nextTag() == XmlPullParser.START_TAG) {
-                        if(xml.getName().equals("landmark")) {
-                            Landmark item = new Landmark();
-                            item.setTitle(xml.getAttributeValue(null, "name"));
-                            item.setLat(Float.parseFloat(xml.getAttributeValue(null, "latitude")));
-                            item.setLon(Float.parseFloat(xml.getAttributeValue(null, "longitude")));
-                            item.setDesc(xml.getAttributeValue(null, "description"));
-                            LatLng test = new LatLng(Float.parseFloat(xml.getAttributeValue(null, "latitude")), Float.parseFloat(xml.getAttributeValue(null, "longitude")));
-                            item.setMarkOps(new MarkerOptions()
-                                    .position(test)
-                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.markericon))
-                                    .title(xml.getAttributeValue(null, "name")));
-                           landmarkArrayList.add(item);
-                        }
-                        skipToEndTag(xml);
-                    }
-
-                } catch(XmlPullParserException ex) {
-                    Log.i("TAG",ex.toString());
-
-                } catch(IOException ex) {
-
-                } finally {
-                    try {
-                        lands.close();
-                    } catch (IOException ex) {
-
-                    }
-                }
-            }
-        }).start();
     }
 
     public static void skipToEndTag(XmlPullParser xml) throws IOException, XmlPullParserException {

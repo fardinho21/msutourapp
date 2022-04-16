@@ -1,9 +1,10 @@
 package edu.msu.fardiho.msutourapp.Server;
 
+import static java.lang.Thread.currentThread;
+
 import android.util.Log;
 
-import com.google.android.gms.common.util.HttpUtils;
-
+import org.json.JSONException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -11,85 +12,64 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import org.json.JSONObject;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
+import java.lang.Thread;
+
+//Socket implementation
+import java.net.Inet4Address;
+import java.net.Socket;
 import java.net.URL;
+import edu.msu.fardiho.msutourapp.Server.ServerRequestThread;
 
 public class Server {
 
-
     //base url and login scripts go here
-    public static final String BASE_URL = "http://localhost:8080/";
+    //public static final String BASE_URL = "10.0.2.2:8080/";
+    public static final String SERVER_IP = "10.0.2.2";
+    public static final int SERVER_PORT = 8080;
     public static final String CREATE_USER = "";
-    public static final String LOGIN = "";
+    public static final String LOGIN = "login";
     public static final String LOAD = "";
     public static final String LOAD_LANDMARKS = "";
     public static final String CREATE_LANDMARK = "";
     public static final String MAGIC = "NechAtHa6RuzeR8x";
-
+    public String serverResponse = null;
 
     //return types can change as we see fit
 
-    public InputStream UserLogin(String username, String password) {
-        String query = LOGIN + "?user=" + username + "&magic=" + MAGIC + "&pw=" + password;
-        try {
-            URL url = new URL(query);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            int responseCode = conn.getResponseCode();
-            if(responseCode != HttpURLConnection.HTTP_OK) {
-                return null;
-            }
-            InputStream stream = conn.getInputStream();
-            return stream;
-        } catch (MalformedURLException e) {
-            // Should never happen
-            return null;
-        } catch (IOException ex) {
-            return null;
-        }
+    private JSONObject generateJSON(String username, String password, String operation) throws JSONException {
+        JSONObject data = new JSONObject();
+        data.put("op",operation);
+        data.put("username", username);
+        data.put("passord", password);
+        return data;
     }
 
-    public InputStream CreateUser(String username, String password) {
-        String query = CREATE_USER + "?user=" + username + "&magic=" + MAGIC + "&pw=" + password;
-        try {
-            URL url = new URL(query);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            int responseCode = conn.getResponseCode();
-            if(responseCode != HttpURLConnection.HTTP_OK) {
-                return null;
-            }
-            InputStream stream = conn.getInputStream();
-            return stream;
-        } catch (MalformedURLException e) {
-            // Should never happen
-            return null;
-        } catch (IOException ex) {
-            return null;
-        }
+    public void setServerResponse(String res) {
+        this.serverResponse = res;
+    }
+
+    public String getServerResponse() {return serverResponse;}
+
+    public JSONObject getServerResponseObject() throws JSONException {
+        return new JSONObject(serverResponse);
+    }
+
+    public InputStream RequestToServer(String username, String password, String operation) throws JSONException {
+        JSONObject data = generateJSON(username, password, operation);
+        ServerRequestThread SerReqTH = new ServerRequestThread(SERVER_PORT, SERVER_IP, data, this);
+        //ServerResponseThread SerResTH = new ServerResponseThread();
+        //SerReqTH.addListener(SerResTH);
+        Thread TH = new Thread(SerReqTH);
+        TH.start();
+        return null;
     }
 
     //pulls all landmark locations
     public InputStream loadLandmarks() {
-        //String query = LOAD_LANDMARKS;
-        String query = LOAD + "?magic=" + MAGIC;
-        try {
-            URL url = new URL(query);
-
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            int responseCode = conn.getResponseCode();
-            if(responseCode != HttpURLConnection.HTTP_OK) {
-                return null;
-            }
-            InputStream stream = conn.getInputStream();
-            return stream;
-        } catch (MalformedURLException e) {
-            // Should never happen
-            return null;
-        } catch (IOException ex) {
-            return null;
-        }
+        return null;
     }
 
     //crate landmark
@@ -129,14 +109,4 @@ public class Server {
         }
     }
     //TODO : Replace with JSON parser
-    public static void skipToEndTag(XmlPullParser xml) throws IOException, XmlPullParserException {
-        int tag;
-        do {
-            tag = xml.next();
-            if(tag == XmlPullParser.START_TAG) {
-                // Recurse over any start tag
-                skipToEndTag(xml);
-            }
-        } while(tag != XmlPullParser.END_TAG && tag != XmlPullParser.END_DOCUMENT);
-    }
 }
