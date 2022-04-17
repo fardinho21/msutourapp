@@ -48,7 +48,7 @@ public class Login {
                         break;
                     }
                 } else {
-                    Toast.makeText(mainActivity, "Invalid Login", Toast.LENGTH_SHORT).show();
+                    mainActivity.notifyUser("Invalid Login");
                 }
                 Thread.currentThread().sleep(500);
             }

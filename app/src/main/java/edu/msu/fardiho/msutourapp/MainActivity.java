@@ -1,7 +1,5 @@
 package edu.msu.fardiho.msutourapp;
 
-import edu.msu.fardiho.msutourapp.MainClickListener;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -11,7 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     //Test variables start
     String username = "user";
     String password = "pass";
@@ -34,7 +32,13 @@ public class MainActivity extends AppCompatActivity {
     }
     //check password against database record and login
     //if not credentials are incorrect, toast
-    public void onLogin(View view) {
+
+    @Override
+    public void onClick(View view) {
+        onLogin(view);
+    }
+
+    public void onLogin(View view)  {
         // Get values from form fields
         username = username_text.getText().toString();
         password = password_text.getText().toString();
@@ -53,19 +57,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //toggles the layout to display EditText fields for creating a user
+    //also swaps out clicklisteners and text for login button
     public void onCreateNewUserMain(View view) {
+
         EditText newUser_et = (EditText)findViewById(R.id.reenterpass_et);
         Button logIn_btn = (Button)findViewById(R.id.login);
         Button newUser_btn = (Button)findViewById(R.id.NewUser);
         if (!createUserMode) {
             createUserMode = true;
-            logIn_btn.setOnClickListener(new MainClickListener());
+            logIn_btn.setOnClickListener(new NewUserClickListener(this));
             logIn_btn.setText(R.string.login_btn_text_CreateUser);
             newUser_et.setVisibility(View.VISIBLE);
             newUser_btn.setText(R.string.newuser_btn_text_BackToLogin);
         } else {
             createUserMode = false;
-            logIn_btn.setOnClickListener(null);
+            logIn_btn.setOnClickListener(this);
             logIn_btn.setText(R.string.login_btn_text_Login);
             newUser_et.setVisibility(View.GONE);
             newUser_btn.setText(R.string.newuser_btn_text_NewUser);
@@ -86,5 +93,10 @@ public class MainActivity extends AppCompatActivity {
     public void setLoginStatus(boolean value) { loginSuccessful = value; }
 
     public boolean getLoginStatus() { return loginSuccessful; }
+
+    public void notifyUser(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
 
 }

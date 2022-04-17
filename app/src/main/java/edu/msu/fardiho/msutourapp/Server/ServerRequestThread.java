@@ -49,7 +49,7 @@ public class ServerRequestThread implements Runnable{
 
             while (true) {
                 response = input.readLine();
-                if (response != "" && response != null) {
+                if (response != null && !response.equals("")) {
                     serverRef.setServerResponse(response);
                     Log.i("ServerThread.msg", serverRef.getServerResponse());
                     break;
