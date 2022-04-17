@@ -20,7 +20,6 @@ public class ServerRequestThread implements Runnable{
     private Server serverRef = null;
 
     //constructor
-
     private void connectionInfo(int portNumber, String hostName, Server serverRef) {
         this.portNumber = portNumber;
         this.hostName = hostName;
@@ -29,15 +28,14 @@ public class ServerRequestThread implements Runnable{
 
     ServerRequestThread(int portNumber, String hostName, JSONObject data, Server serverRef) {
         this.connectionInfo(portNumber, hostName, serverRef);
-        if (data != null) {
+        if (data != null)
             this.data = data;
-        }
     }
 
     @Override
     public final void run() {
         Socket s;
-        //ServerSocket serverSocket;
+        String response = "";
         try {
             s = new Socket(hostName, portNumber);
 
@@ -50,16 +48,18 @@ public class ServerRequestThread implements Runnable{
             output.println(data.toString()); // SEND DATA TO SERVER
 
             while (true) {
-                serverRef.setServerResponse(input.readLine());
-                Log.i("ServerThread.msg", serverRef.getServerResponse());
+                response = input.readLine();
+                if (response != "" && response != null) {
+                    serverRef.setServerResponse(response);
+                    Log.i("ServerThread.msg", serverRef.getServerResponse());
+                    break;
+                }
             }
-
-        }
-        catch (Exception e) {
-            Log.e("ServerThread: ", Objects.requireNonNull(e.getMessage()));
-        }
-        finally {
-            Log.i("ServerRequestThread: ","thread done");
+        } catch (Exception e) {
+            Log.e("ServerThread ", Objects.requireNonNull(e.getMessage()));
+        } finally {
+            Log.i("ServerRequestThread ","thread done");
+            Thread.currentThread().interrupt();
         }
     }
 

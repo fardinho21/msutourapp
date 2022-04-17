@@ -2,23 +2,25 @@ package edu.msu.fardiho.msutourapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Xml;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 import edu.msu.fardiho.msutourapp.Server.Server;
+import edu.msu.fardiho.msutourapp.Login;
 
 public class NewUserActivity extends AppCompatActivity {
+
+    public MainActivity mainActivity = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,14 +28,7 @@ public class NewUserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_user);
     }
 
-    public void GoTime(){
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
-
-    public void NoTime(){
-        Toast.makeText(this, "User Already Exists", Toast.LENGTH_LONG).show();
-    }
+    public void setMainActivity(MainActivity ma) { mainActivity = ma; }
 
     public void onCreateUser(View view) {
 
@@ -53,49 +48,33 @@ public class NewUserActivity extends AppCompatActivity {
         //create user
         else {
             Server server = new Server();
-            InputStream stream = null;
+            String res = "";
             try {
-                stream = server.RequestToServer(username, password, "CREATEUSER");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            //TODO: Change XML parser to JSON parser
-            boolean fail = stream == null;
-            if(!fail) {
-                try {
-                    XmlPullParser xml = Xml.newPullParser();
-                    xml.setInput(stream, "UTF-8");
-                    xml.nextTag();      // Advance to first tag
-                    xml.require(XmlPullParser.START_TAG, null, "msutour");
-                    String status = xml.getAttributeValue(null, "status");
-                    if(status.equals("yes")) {
-                        GoTime();
-                    } else if (status.equals("no")){
-                        String error = xml.getAttributeValue(null, "error");
-                        if (error.equals("username already exists")){
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    NoTime();
-                                }
-                            });
-                        }
-                        fail = true;
-                    }
-                    else{
-                        fail = true;
-                    }
-                } catch(IOException ex) {
-                    fail = true;
-                } catch(XmlPullParserException ex) {
-                    fail = true;
-                } finally {
-                    try {
-                        stream.close();
-                    } catch (IOException ex) {
+                server.RequestToServer(username, password, "CREATE_USER");
+                while (true) {
+                    res = server.getServerResponse();
+                    if (res != null && !res.equals("")) {
+                        JSONObject obj = new JSONObject(res);
+                        if (obj.getString("op").equals("USER_CREATED")) {
+                            Toast.makeText(this, "User created successfully!", Toast.LENGTH_SHORT)
+                                    .show();
 
+                            //ERROR : Android application cannot be cast to MainActivity
+                            new Login(username, password, mainActivity)
+                                    .LoginSuccessful();
+                            ((MainActivity) getApplicationContext())
+                                    .startTourActivity();
+                            break;
+                        }
+                    } else {
+                        Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
                     }
+
+                    Thread.currentThread().sleep(500);
                 }
+
+            } catch (Exception e) {
+                Log.i("NewUserActivity", Objects.requireNonNull(e.getMessage()));
             }
         }
     }

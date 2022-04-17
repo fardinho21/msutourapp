@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
     String password = "pass";
     EditText username_text;
     EditText password_text;
-    public boolean loginSuccessful = false;
+    private boolean loginSuccessful = false;
 
     //test variables end
     @Override
@@ -30,36 +30,43 @@ public class MainActivity extends AppCompatActivity {
     //if not credentials are incorrect, toast
     public void onLogin(View view) {
         // Get values from form fields
-        String un = username_text.getText().toString();
-        String pw = password_text.getText().toString();
-        Login login = new Login(un, pw, this);
+        username = username_text.getText().toString();
+        password = password_text.getText().toString();
+        Login login = new Login(username, password, this);
         login.onCreateDialog();
-        try{
-            Thread.currentThread().sleep(1000);
-        }
-        catch (InterruptedException e) { }
+
         if (loginSuccessful) {
             //writePreferences();
             //instantiate tour intent and bundle
-            Intent tour_intent = new Intent(this,TourActivity.class);
-            Bundle b = new Bundle();
-            //store user data and bundle
-            b.putString("USERNAME",un);
-            b.putString("PASS",pw);
-            tour_intent.putExtras(b);
-            //start the tour activity
-            startActivity(tour_intent);
+            startTourActivity();
         }
         else {
-            Toast.makeText(this,"Invalid username or password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Invalid username or password", Toast.LENGTH_SHORT)
+                    .show();
         }
+
     }
 
     public void onCreateNewUserMain(View view) {
         Intent intent = new Intent(this, NewUserActivity.class);
+
         startActivity(intent);
         //readPreferences();
     }
 
-    public void setLoginSuccessful(boolean success) { loginSuccessful = success;}
+    public void startTourActivity() {
+        Intent tour_intent = new Intent(this,TourActivity.class);
+        Bundle b = new Bundle();
+        //store user data and bundle
+        b.putString("USERNAME",username);
+        b.putString("PASS",password);
+        tour_intent.putExtras(b);
+        //start the tour activity
+        startActivity(tour_intent);
+    }
+
+    public void setLoginStatus(boolean value) { loginSuccessful = value; }
+
+    public boolean getLoginStatus() { return loginSuccessful; }
+
 }

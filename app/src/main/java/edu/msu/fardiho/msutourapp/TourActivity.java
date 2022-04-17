@@ -1,5 +1,6 @@
 package edu.msu.fardiho.msutourapp;
 
+import edu.msu.fardiho.msutourapp.Landmark;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -113,45 +114,6 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
     MarkerClickListener mkcl = new MarkerClickListener();
     private MarkerOptions user_markops;
     private Marker userMarker;
-
-    public class Landmark {
-
-        private MarkerOptions mark;
-        private String desc;
-        private String name;
-        private float lat;
-        private float lon;
-        public float getLat(){return lat;}
-        public float getLon(){return lon;}
-        public String getDesc(){return desc;}
-        public String getName() {
-            return name;
-        }
-        public void setMarkOps(MarkerOptions m) {
-            mark = m;
-        }
-        public MarkerOptions getMarkOps() {return mark;}
-        public void setDesc(String desc){
-            this.desc = desc;
-        }
-        public void setTitle(String title){
-            this.name = title;
-        }
-        public void setLat(float lat){
-            this.lat = lat;
-        }
-        public void setLon(float lon){
-            this.lon = lon;
-        }
-
-        Landmark (String des, float la, float lo, String n) {
-            lat = la; lon = lo; desc = des; name = n;
-        }
-        Landmark () {
-            lat = 0; lon = 0; desc = ""; name = "";
-        }
-    }
-
     CreateLndMrkDlg clmdlg = new CreateLndMrkDlg();
     private double user_latitude =0;
     private double user_longitude =0;
@@ -306,42 +268,7 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
     //get information from dialog, create the landmark and store it in landmark array
     //then call the sql server to store the landmark in the database table
     public void onDlgCreate(View view){
-        //get entered info and dismiss
-        HashMap<String, String> infoHashMap = clmdlg.getInfo();
-        clmdlg.dismiss();
-        Log.i("infoHashMap", infoHashMap.toString());
-        //create the landmark
-        String desc = infoHashMap.get("desc");
-        String name = infoHashMap.get("name");
 
-        if (infoHashMap.get("longitude")!=null && infoHashMap.get("latitude")!=null) {
-            float longi = Float.valueOf(infoHashMap.get("longitude"));
-            float lati = Float.valueOf(infoHashMap.get("latitude"));
-            //instantiate landmark object
-            Landmark lm = new Landmark(desc,lati,longi,name);
-            //get location and set marker options
-            LatLng lmrk_loc = new LatLng(user_latitude, user_longitude);
-            MarkerOptions mrkops = new MarkerOptions()
-                    .position(lmrk_loc)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.markericon));
-            lm.setMarkOps(mrkops);
-            landmarkArrayList.add(lm);
-            Log.i("landmarkArrayList",landmarkArrayList.toString());
-
-            //final String xmlStr = writer.toString();
-            final String sendString = "?name="+name+"&latitude="+Float.toString(lati)+"&longitude="+Float.toString(longi)+"&description="+desc;
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    //int res = server.createLandmark(xmlStr);
-                    Server server = new Server();
-                    int res = server.createLandmark(sendString);
-                }
-            }).start();
-        } else {
-            Toast.makeText(this, "Failed to create Landmark", Toast.LENGTH_SHORT).show();
-        }
     }
 
     public double getUserLongitude(){
@@ -361,7 +288,4 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    public void clearLandMarks() {
-        landmarkArrayList.clear();
-    }
 }
