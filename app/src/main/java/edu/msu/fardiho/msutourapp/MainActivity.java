@@ -1,11 +1,13 @@
 package edu.msu.fardiho.msutourapp;
 
+import edu.msu.fardiho.msutourapp.MainClickListener;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.method.PasswordTransformationMethod;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -15,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
     String password = "pass";
     EditText username_text;
     EditText password_text;
+    EditText reenter_pass_text;
+    private boolean createUserMode = false;
     private boolean loginSuccessful = false;
 
     //test variables end
@@ -22,9 +26,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        reenter_pass_text = (findViewById(R.id.reenterpass_et));
         username_text = (findViewById(R.id.username_et));
         password_text = (findViewById(R.id.password_et));
-        //password_text.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        reenter_pass_text.setVisibility(View.GONE);
+
     }
     //check password against database record and login
     //if not credentials are incorrect, toast
@@ -48,10 +54,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onCreateNewUserMain(View view) {
-        Intent intent = new Intent(this, NewUserActivity.class);
-
-        startActivity(intent);
-        //readPreferences();
+        EditText newUser_et = (EditText)findViewById(R.id.reenterpass_et);
+        Button logIn_btn = (Button)findViewById(R.id.login);
+        Button newUser_btn = (Button)findViewById(R.id.NewUser);
+        if (!createUserMode) {
+            createUserMode = true;
+            logIn_btn.setOnClickListener(new MainClickListener());
+            logIn_btn.setText(R.string.login_btn_text_CreateUser);
+            newUser_et.setVisibility(View.VISIBLE);
+            newUser_btn.setText(R.string.newuser_btn_text_BackToLogin);
+        } else {
+            createUserMode = false;
+            logIn_btn.setOnClickListener(null);
+            logIn_btn.setText(R.string.login_btn_text_Login);
+            newUser_et.setVisibility(View.GONE);
+            newUser_btn.setText(R.string.newuser_btn_text_NewUser);
+        }
     }
 
     public void startTourActivity() {

@@ -44,22 +44,55 @@
         android:inputType="textPassword"
         android:hint="@string/password" />
 
-    <Button
-        android:id="@+id/login"
+    <EditText
+        android:id="@+id/reenterpass_et"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/password_et"
-        android:layout_alignEnd="@id/password_et"
+        android:layout_below="@+id/password_et"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="false"
+        android:layout_centerVertical="false"
         android:layout_marginTop="10dp"
-        android:onClick="onLogin"
-        android:text="@string/login" />
+        android:ems="10"
+        android:inputType="textPassword"
+        android:hint="@string/reenterpass_et_text_ReEnterPassword" />
 
-    <Button
-        android:id="@+id/NewUser"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@id/password_et"
-        android:layout_alignBottom="@id/login"
-        android:onClick="onCreateNewUserMain"
-        android:text="@string/newUser" />
+        android:layout_below="@id/reenterpass_et">
+
+        <View
+            android:id="@+id/marginRight"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="onLogin"
+            android:text="@string/login"
+            />
+
+        <Button
+            android:id="@+id/NewUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="onCreateNewUserMain"
+            android:text="@string/newUser"
+            />
+
+        <View
+            android:id="@+id/marginLeft"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+
 </RelativeLayout>

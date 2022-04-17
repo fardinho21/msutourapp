@@ -49,5 +49,10 @@
     }
   ]
   </string>
+    <string name="login_btn_text_Login">Login</string>
+    <string name="newuser_btn_text_NewUser">New User</string>
+    <string name="newuser_btn_text_BackToLogin">Back to Login</string>
+    <string name="login_btn_text_CreateUser">Create User</string>
+    <string name="reenterpass_et_text_ReEnterPassword">Re-enter Password</string>
 
 </resources>
