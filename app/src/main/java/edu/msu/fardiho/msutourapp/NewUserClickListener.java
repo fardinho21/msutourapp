@@ -1,6 +1,5 @@
 package edu.msu.fardiho.msutourapp;
 
-import edu.msu.fardiho.msutourapp.Server.Server;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;

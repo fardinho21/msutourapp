@@ -1,5 +1,6 @@
-package edu.msu.fardiho.msutourapp.Server;
+package edu.msu.fardiho.msutourapp;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -32,6 +33,7 @@ public class ServerRequestThread implements Runnable{
             this.data = data;
     }
 
+    @SuppressLint("LongLogTag")
     @Override
     public final void run() {
         Socket s;
@@ -51,7 +53,8 @@ public class ServerRequestThread implements Runnable{
                 response = input.readLine();
                 if (response != null && !response.equals("")) {
                     serverRef.setServerResponse(response);
-                    Log.i("ServerThread.msg", serverRef.getServerResponse());
+                    Log.i("ServerThread.serverRef.getServerResponse():",
+                            serverRef.getServerResponse());
                     break;
                 }
             }

@@ -2,6 +2,8 @@ package edu.msu.fardiho.msutourapp;
 
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONObject;
+
 public class Landmark {
     private MarkerOptions mark;
     private String desc;
@@ -30,6 +32,10 @@ public class Landmark {
     public void setLon(float lon){
         this.lon = lon;
     }
+
+    public JSONObject getJSONObject() { return new JSONObject(); }
+
+    public String getJSONString() { return new JSONObject().toString(); }
 
     Landmark (String des, float la, float lo, String n) {
         lat = la; lon = lo; desc = des; name = n;

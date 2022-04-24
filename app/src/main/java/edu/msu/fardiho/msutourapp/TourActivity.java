@@ -11,14 +11,15 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Xml;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import edu.msu.fardiho.msutourapp.MarkerClickListener;
+import edu.msu.fardiho.msutourapp.ActiveListener;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -30,136 +31,76 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlSerializer;
+import org.json.JSONException;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
-
-
-
-import edu.msu.fardiho.msutourapp.Server.Server;
 
 public class TourActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    //TEST TIMER
-    public static String magic = "NechAtHa6RuzeR8x";
+
     LocationManager locationManager = null;
-    private ActiveListener activeListener = new ActiveListener();
+    private final ActiveListener activeListener = new ActiveListener();
     private GoogleMap mMap;
-    Server server;
     protected ArrayList<Landmark> landmarkArrayList = new ArrayList<Landmark>();
-    private class ActiveListener implements LocationListener {
-
-        @Override
-        public void onLocationChanged(Location location) {
-            Log.i("refresh", "map");
-            refreshMap();
-            //update user position marker on map
-            LatLng pos = new LatLng(location.getLatitude(),location.getLongitude());
-            userMarker.setPosition(pos);
-            //mMap.animateCamera(CameraUpdateFactory.newLatLng(pos));
-            locateUser(location);
-        }
-
-        @Override
-        public void onStatusChanged(String s, int i, Bundle bundle) {
-            //unimplemented
-        }
-
-        @Override
-        public void onProviderEnabled(String s) {
-            //unimplemented
-        }
-
-        @Override
-        public void onProviderDisabled(String s) {
-            registerListeners();
-        }
-    }
-
-    public class MarkerClickListener implements GoogleMap.OnMarkerClickListener{
-        LndMrkDescDlg lndMrkDescDlg;
-        @Override
-        public boolean onMarkerClick(Marker marker) {
-
-            if(marker.getId().equals("m0")){
-                Toast.makeText(TourActivity.this, "That's you!", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-            //get landmark position
-            LatLng latLng = marker.getPosition();
-            Log.i("latlng", latLng.toString());
-            String lndmrk_name = "Name";
-            String lndmrk_desc = "Description";
-            //find the landmark in the array
-            for (Landmark l : landmarkArrayList){
-                if ( marker.getTitle().equals(l.getName())){
-                    lndmrk_name = l.getName();
-                    if (l.getDesc() != null){
-                        lndmrk_desc = l.getDesc();
-                    }
-                }
-            }
-            lndMrkDescDlg = new LndMrkDescDlg(lndmrk_name, lndmrk_desc);
-            lndMrkDescDlg.show(getSupportFragmentManager(), "desc");
-            return false;
-        }
-    }
-
-    MarkerClickListener mkcl = new MarkerClickListener();
+    MarkerClickListener mkcl = new MarkerClickListener(this);
     private MarkerOptions user_markops;
     private Marker userMarker;
     CreateLndMrkDlg clmdlg = new CreateLndMrkDlg();
     private double user_latitude =0;
     private double user_longitude =0;
-    String user;
-    String pass;
+    private String user;
+    private String userId;
+
+    private boolean getPermissionStatus() {
+        return ContextCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED;
+    }
+    private void obtainPermission() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                1);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tour);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+        assert mapFragment != null;
         mapFragment.getMapAsync(this);
-        //permissions is not grandted request permissions
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-        != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    1);
+
+        //permissions is not granted request permissions
+        if (getPermissionStatus()) {
+            obtainPermission();
         }
+
+        //set location manager
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         // Force the screen to say on and bright
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
         Intent i = getIntent();
-        //load user name and password
+
+        //TODO: load the user id from extras #DONE
+        //load user name and userId
         if (i != null) {
             user = i.getExtras().getString("USERNAME");
-            pass = i.getExtras().getString("PASS");
+            userId = i.getExtras().getString("UID");
             Log.i("username", user);
-            Log.i("pass", pass);
+            Log.i("userId", userId);
         }
-        //load all landmarks from database
-        loadLandMarks();
+        //TODO: Load landmarks from database
+        Server server = new Server();
+        try {
+            server.RequestToServer(user, userId, "FETCH_LANDMARKS");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -195,6 +136,10 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
         super.onPause();
     }
 
+    public void onDlgCancel(View view){
+        clmdlg.dismiss();
+    }
+
     //bring up create landmark dialog
     public void onCreateLandmark(View view) {
         clmdlg.show(getSupportFragmentManager(), "create");
@@ -202,32 +147,9 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
     }
     //load landmarks from sql server and stores them into the array
 
-    public void loadLandMarks() {
-        Log.i("loadLandMarks", "called");
-    }
-
-    public static void skipToEndTag(XmlPullParser xml) throws IOException, XmlPullParserException {
-        int tag;
-        do
-        {
-            tag = xml.next();
-            if(tag == XmlPullParser.START_TAG) {
-                // Recurse over any start tag
-                skipToEndTag(xml);
-            }
-        } while(tag != XmlPullParser.END_TAG &&
-                tag != XmlPullParser.END_DOCUMENT);
-    }
-
     //place landmark on the map
     public void pinLandmark(Landmark lm) {
         mMap.addMarker(lm.getMarkOps());
-    }
-
-    //get lat and lon for user
-    public void locateUser(Location location) {
-        user_latitude = location.getLatitude();
-        user_longitude = location.getLongitude();
     }
 
     private void registerListeners(){
@@ -252,7 +174,7 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
             locationManager.requestLocationUpdates(best, 200, 0, activeListener);
             Location location = locationManager.getLastKnownLocation(best);
             if (location != null){
-               locateUser(location);
+               setUserLocation(location);
             }
         }
     }
@@ -261,15 +183,14 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
         locationManager.removeUpdates(activeListener);
     }
 
-    public void onDlgCancel(View view){
-        clmdlg.dismiss();
+    //setters
+    public void setUserLocation(Location location) {
+        user_latitude = location.getLatitude();
+        user_longitude = location.getLongitude();
     }
 
-    //get information from dialog, create the landmark and store it in landmark array
-    //then call the sql server to store the landmark in the database table
-    public void onDlgCreate(View view){
-
-    }
+    //getters
+    public Location getUserlocation() { return new Location(LocationManager.GPS_PROVIDER); }
 
     public double getUserLongitude(){
         return user_longitude;
@@ -279,13 +200,20 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
         return user_latitude;
     }
 
-    //clears map and repins landmarks
+    public ArrayList<Landmark> getLandmarkArrayList() { return landmarkArrayList; }
+
+    //Notifiers and Refreshers
     public void refreshMap() {
         Log.i("array", landmarkArrayList.toString());
         if (mMap != null) {
             mMap.clear();
             onMapReady(mMap);
         }
+    }
+
+    public void notifyUser(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT)
+                .show();
     }
 
 }

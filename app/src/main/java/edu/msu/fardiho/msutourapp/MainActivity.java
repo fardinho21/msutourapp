@@ -11,8 +11,9 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     //Test variables start
-    String username = "user";
-    String password = "pass";
+    private String username = "user";
+    private String password = "pass";
+    private String uid = "";
     EditText username_text;
     EditText password_text;
     EditText reenter_pass_text;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Login l = new Login();
         reenter_pass_text = (findViewById(R.id.reenterpass_et));
         username_text = (findViewById(R.id.username_et));
         password_text = (findViewById(R.id.password_et));
@@ -38,17 +40,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         onLogin(view);
     }
 
-    public void onLogin(View view)  {
-        // Get values from form fields
+    protected void onLogin(View view)  {
+        // Get values from user input
         username = username_text.getText().toString();
         password = password_text.getText().toString();
         Login login = new Login(username, password, this);
         login.onCreateDialog();
 
         if (loginSuccessful) {
-            //writePreferences();
             //instantiate tour intent and bundle
-            startTourActivity();
+            //TODO: pass username and userId to tourActivity #DONE
+            startTourActivity(username, uid);
         }
         else {
             Toast.makeText(this, "Invalid username or password", Toast.LENGTH_SHORT)
@@ -79,20 +81,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void startTourActivity() {
+    public void startTourActivity(String username, String uid) {
         Intent tour_intent = new Intent(this,TourActivity.class);
         Bundle b = new Bundle();
+        //TODO: store userId instead of password #DONE
         //store user data and bundle
         b.putString("USERNAME",username);
-        b.putString("PASS",password);
+        b.putString("UID",uid);
         tour_intent.putExtras(b);
         //start the tour activity
         startActivity(tour_intent);
     }
 
-    public void setLoginStatus(boolean value) { loginSuccessful = value; }
-
-    public boolean getLoginStatus() { return loginSuccessful; }
+    public void setLoginStatus(boolean value, String username, String userId) {
+        uid = userId;
+        this.username = username;
+        loginSuccessful = value;
+    }
 
     public void notifyUser(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();

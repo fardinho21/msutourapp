@@ -10,14 +10,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
-import edu.msu.fardiho.msutourapp.Server.Server;
-
 public class Login {
 
     private String username = "defaultUser";
     private String password = "deafultPass";
     private MainActivity mainActivity = null;
 
+    Login () {
+
+    }
 
     Login(String username, String password, MainActivity mainActivity) {
         this.username = username;
@@ -25,12 +26,9 @@ public class Login {
         this.mainActivity = mainActivity;
     }
 
-    public void LoginSuccessful() {
-        mainActivity.setLoginStatus(true);
-    }
-
-    public void LoginFailed() {
-        mainActivity.setLoginStatus(false);
+    public void LoginSuccessful(String username, String userId) {
+        //TODO: set the username and userId on the mainActivity
+        mainActivity.setLoginStatus(true, username, userId);
     }
 
     public void onCreateDialog() {
@@ -42,9 +40,10 @@ public class Login {
             while (true) {
                 res = server.getServerResponse();
                 if (res != null && !res.equals("")) {
-                    JSONObject obj = new JSONObject(res);
+                    JSONObject obj = new JSONObject(res); //JSONObject from string
                     if (obj.getString("op").equals("LOGIN_TRUE")) {
-                        LoginSuccessful();
+                        LoginSuccessful(server.getUsername(),server.getUserId());
+                        //TODO: get username and userId from server on login-success
                         break;
                     }
                 } else {
