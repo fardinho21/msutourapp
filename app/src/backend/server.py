@@ -1,14 +1,8 @@
 from socket import *
-from create_user_id import *
+from utility import *
 import json
 
-def printUserDB(db):
-        for k, v in db.items():
-                print(k,v)
 
-def printLandmarkDB(db):
-        for lm in db:
-                print(lm)
 
 start = '\033[2;31;43m ### REQUEST START ### \033[0;0m'
 end = '\033[2;31;43m ### REQUEST END ### \033[0;0m'
@@ -33,10 +27,10 @@ while True:
 
         data = c.recv(1024)
         print("Data: ", data.decode())
-        d = json.loads(data.decode())
+        data_as_json = json.loads(data.decode())
         
-        op = d['op']
-        user = d['username']
+        op = data_as_json['op']
+        user = data_as_json['username']
 
         # request format : {"op":"LOGIN", "username":<username>, "password":<password>}
         # response format : { "op":"LOGIN_TRUE","username":<user> , "userId":<uid> }
@@ -45,18 +39,22 @@ while True:
         if op == "LOGIN":
                 if users_database.get(user) is None:
                         printUserDB(users_database)
-                        response = '{\"op\":\"ERROR\"}'
+                        #response = '{\"op\":\"ERROR\"}'
+                        response = json.dumps({"op":"ERROR"})
+
 
                 elif users_database.get(user) is not None:
-                        uid = createUserID(user, d['password'])
-                        check = users_database.get(user, d['password']) == uid
+                        uid = createUserID(user, data_as_json['password'])
+                        check = users_database.get(user, data_as_json['password']) == uid
 
                         if check:
-                                response = '{\"op\":\"LOGIN_TRUE\",\"username\":\"' + user + '\",\"userId\":\"' + uid + '\"}'
+                                #response = '{\"op\":\"LOGIN_TRUE\",\"username\":\"' + user + '\",\"userId\":\"' + uid + '\"}'
+                                response = json.dumps({"op":"LOGIN_TRUE","username":user,"userId":uid})
 
                         else:
                                 printUserDB(users_database)
-                                response = '{\"op\":\"ERROR\"}'
+                                #response = '{\"op\":\"ERROR\"}'
+                                response = json.dumps({"op":"ERROR"})
 
                 complete = True
         
@@ -68,31 +66,39 @@ while True:
 
                 if users_database.get(user):
                         printUserDB(users_database)
-                        response = '{\"op\":\"ERROR\"}'
+                        #response = '{\"op\":\"ERROR\"}'
+                        response = json.dumps({"op":"ERROR"})
 
                 else:
-                        uid = createUserID(user, d['password'])
+                        uid = createUserID(user, data_as_json['password'])
                         users_database[user] = uid
                         landmark_database[user] = []
                         printUserDB(users_database)
                         printLandmarkDB(landmark_database)
-                        response = '{\"op\":\"USER_CREATED\",\"userId\":\"' + uid + '\"}'
+                        #response = '{\"op\":\"USER_CREATED\",\"userId\":\"' + uid + '\"}'
+                        response = json.dumps({"op":"USER_CREATED","userId":uid})
 
         # request format : {"op":"CREATE_LANDMARK", "username":<username>, "uid":<uid>, "landmark":<landmark-json-string> }
         # response format : { "op":"LANDMARK_CREATED", "userId":<uid> }
         # error format : { "op": "ERROR" }
         # checks users_database for already existing landmark, then creates landmark.
         elif op == "CREATE_LANDMARK":
-                #create a landmark
+                #TODO: Create a landmark object for a user.
+                user_landmarks = landmark_database.get(user)
+                if user_landmarks is not None:
+                        landmark_database[user].append(data_as_json["landmark"])
+                        response = json.dumps({"op":"LANDMARK_CREATED", "userId":uid})
                 pass
 
         # request format : {"op":"FETCH_LANDMARKS", "username":<username>, "uid":<uid> }
-        # response format : { "op":"FETCHED_LANDMARK_COLLECTION", "userId":<uid>, "landmarks":<comma separated landmark-json-strings> }
+        # response format : { "op":"FETCHED_LANDMARK_COLLECTION", 
+        # "userId":<uid>, 
+        # "landmarks":<comma separated landmark-json-strings> }
         # error format : { "op": "ERROR" }
-        # checks users_database for existing user, returns landmark array
+        # checks users_database for existing user
+        # returns the landmark for a specific user
         elif op == "FETCH_LANDMARKS":
-                users_database
-                #return the array of landmarks
+                #TODO: Return landmarks for specific user.
                 pass
 
         complete = True

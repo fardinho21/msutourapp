@@ -6,13 +6,13 @@ import org.json.JSONObject;
 
 public class Landmark {
     private MarkerOptions mark;
-    private String desc;
+    private String description;
     private String name;
     private float lat;
     private float lon;
     public float getLat(){return lat;}
     public float getLon(){return lon;}
-    public String getDesc(){return desc;}
+    public String getDesc(){return description;}
     public String getName() {
         return name;
     }
@@ -21,16 +21,7 @@ public class Landmark {
     }
     public MarkerOptions getMarkOps() {return mark;}
     public void setDesc(String desc){
-        this.desc = desc;
-    }
-    public void setTitle(String title){
-        this.name = title;
-    }
-    public void setLat(float lat){
-        this.lat = lat;
-    }
-    public void setLon(float lon){
-        this.lon = lon;
+        description = desc;
     }
 
     public JSONObject getJSONObject() { return new JSONObject(); }
@@ -38,9 +29,9 @@ public class Landmark {
     public String getJSONString() { return new JSONObject().toString(); }
 
     Landmark (String des, float la, float lo, String n) {
-        lat = la; lon = lo; desc = des; name = n;
+        lat = la; lon = lo; description = des; name = n;
     }
     Landmark () {
-        lat = 0; lon = 0; desc = ""; name = "";
+        lat = 0; lon = 0; description = ""; name = "";
     }
 }

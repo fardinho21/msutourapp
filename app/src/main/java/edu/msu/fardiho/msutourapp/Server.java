@@ -2,7 +2,6 @@ package edu.msu.fardiho.msutourapp;
 
 import android.util.Log;
 import org.json.JSONException;
-import java.io.InputStream;
 import org.json.JSONObject;
 import java.lang.Thread;
 
@@ -15,9 +14,9 @@ public class Server {
     private String userIdResponse = "";
 
     public Server() {
-//        Log.i("Server()", "server started at " +
-//                SERVER_IP + " " +
-//                String.valueOf(SERVER_PORT));
+        Log.i("Server()", "server started at " +
+                SERVER_IP + " " +
+                String.valueOf(SERVER_PORT));
     }
 
     private JSONObject generateJSONfromUserInput(String username, String password, String operation)
@@ -63,13 +62,11 @@ public class Server {
     //Setters
     public void setUsername (String res)
             throws JSONException{
-        //TODO: set username from serverResponse #DONE
         JSONObject obj = new JSONObject(res);
         usernameResponse = obj.getString("username");
     }
     public void setUserId (String res)
             throws JSONException{
-        //TODO: set userId from serverResponse #DONE
         JSONObject obj = new JSONObject(res);
         userIdResponse = obj.getString("userId");
     }

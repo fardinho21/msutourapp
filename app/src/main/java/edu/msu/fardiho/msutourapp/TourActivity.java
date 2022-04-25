@@ -1,6 +1,5 @@
 package edu.msu.fardiho.msutourapp;
 
-import edu.msu.fardiho.msutourapp.Landmark;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -17,10 +16,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
-
-import edu.msu.fardiho.msutourapp.MarkerClickListener;
-import edu.msu.fardiho.msutourapp.ActiveListener;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -30,9 +25,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import org.json.JSONException;
-
 import java.util.ArrayList;
 
 public class TourActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -48,14 +40,10 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
     CreateLndMrkDlg clmdlg = new CreateLndMrkDlg();
     private double user_latitude =0;
     private double user_longitude =0;
-    private String user;
+    private String username;
     private String userId;
 
-    private boolean getPermissionStatus() {
-        return ContextCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED;
-    }
+
     private void obtainPermission() {
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -74,9 +62,7 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         //permissions is not granted request permissions
-        if (getPermissionStatus()) {
-            obtainPermission();
-        }
+        if (getPermissionStatus()) { obtainPermission(); }
 
         //set location manager
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
@@ -84,18 +70,17 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         Intent i = getIntent();
 
-        //TODO: load the user id from extras #DONE
         //load user name and userId
         if (i != null) {
-            user = i.getExtras().getString("USERNAME");
+            username = i.getExtras().getString("USERNAME");
             userId = i.getExtras().getString("UID");
-            Log.i("username", user);
+            Log.i("username", username);
             Log.i("userId", userId);
         }
         //TODO: Load landmarks from database
         Server server = new Server();
         try {
-            server.RequestToServer(user, userId, "FETCH_LANDMARKS");
+            server.RequestToServer(username, userId, "FETCH_LANDMARKS");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -136,21 +121,16 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
         super.onPause();
     }
 
-    public void onDlgCancel(View view){
-        clmdlg.dismiss();
-    }
+    public void onDlgCancel(View view){ clmdlg.dismiss(); }
 
     //bring up create landmark dialog
     public void onCreateLandmark(View view) {
         clmdlg.show(getSupportFragmentManager(), "create");
         clmdlg.setTourActivity(this);
     }
-    //load landmarks from sql server and stores them into the array
 
     //place landmark on the map
-    public void pinLandmark(Landmark lm) {
-        mMap.addMarker(lm.getMarkOps());
-    }
+    public void pinLandmark(Landmark lm) { mMap.addMarker(lm.getMarkOps()); }
 
     private void registerListeners(){
         //unregister any listeners
@@ -179,8 +159,11 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void unregisterListeners() {
-        locationManager.removeUpdates(activeListener);
+    private void unregisterListeners() { locationManager.removeUpdates(activeListener); }
+
+    public void notifyUser(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT)
+                .show();
     }
 
     //setters
@@ -190,30 +173,17 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     //getters
-    public Location getUserlocation() { return new Location(LocationManager.GPS_PROVIDER); }
-
-    public double getUserLongitude(){
-        return user_longitude;
-    }
-
-    public double getUserLatitude() {
-        return user_latitude;
-    }
-
+    public String getUsername() { return username; }
+    public String getUserId() {return userId; }
+    public double getUserLongitude(){ return user_longitude; }
+    public double getUserLatitude() { return user_latitude; }
     public ArrayList<Landmark> getLandmarkArrayList() { return landmarkArrayList; }
-
-    //Notifiers and Refreshers
-    public void refreshMap() {
-        Log.i("array", landmarkArrayList.toString());
-        if (mMap != null) {
-            mMap.clear();
-            onMapReady(mMap);
-        }
+    public Location getUserlocation() { return new Location(LocationManager.GPS_PROVIDER); }
+    private boolean getPermissionStatus() {
+        return ContextCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED;
     }
 
-    public void notifyUser(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT)
-                .show();
-    }
 
 }

@@ -1,24 +1,15 @@
 package edu.msu.fardiho.msutourapp;
 
 import android.util.Log;
-import android.widget.Toast;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Objects;
 
 public class Login {
 
     private String username = "defaultUser";
-    private String password = "deafultPass";
+    private String password = "defaultPass";
     private MainActivity mainActivity = null;
-
-    Login () {
-
-    }
 
     Login(String username, String password, MainActivity mainActivity) {
         this.username = username;
@@ -27,7 +18,6 @@ public class Login {
     }
 
     public void LoginSuccessful(String username, String userId) {
-        //TODO: set the username and userId on the mainActivity
         mainActivity.setLoginStatus(true, username, userId);
     }
 
@@ -43,7 +33,6 @@ public class Login {
                     JSONObject obj = new JSONObject(res); //JSONObject from string
                     if (obj.getString("op").equals("LOGIN_TRUE")) {
                         LoginSuccessful(server.getUsername(),server.getUserId());
-                        //TODO: get username and userId from server on login-success
                         break;
                     }
                 } else {
