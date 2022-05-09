@@ -3,6 +3,28 @@ def createUserID(username, password):
         return "TEST_UID"
     return str(abs(hash(username)) + abs(hash(password)))
 
+def parseLandmarkInfo(landmark_info):
+    info = landmark_info.split(":")
+    info[1] = info[1].strip()
+    info = info[0].strip().split(" ") + [info[1]]
+    return info
+
+def createLandmarkID(landmark_description, uid):
+    i = 0
+    t = 0
+    for c in landmark_description:
+        i+=abs(hash(c))
+    if uid == "TEST_UID":
+        for c in uid:
+            t+=abs(hash(c))
+            return i^t
+    return i^int(uid)
+
+def createLandmark(landmark_info, uid):
+    lm_info = parseLandmarkInfo(landmark_info)
+    lm_id = createLandmarkID(lm_info[2], uid)
+    return (lm_id, lm_info)
+
 def printUserDB(db):
     for k, v in db.items():
         print(k,v)

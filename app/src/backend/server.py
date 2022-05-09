@@ -1,7 +1,7 @@
 from socket import *
 from utility import *
 import json
-
+import sys, os
 
 
 start = '\033[2;31;43m ### REQUEST START ### \033[0;0m'
@@ -19,7 +19,7 @@ connNum = 0
 #DATA BASE DEFINITIONS START
 #################################################################
 # <users_database::dict{ <username::string> : <userId::integer> }>
-users_database = {}
+users_database = {"TEST_USER":"TEST_UID"}
 #################################################################
 #DATA BASE DEFINITIONS END
 #################################################################
@@ -30,7 +30,7 @@ users_database = {}
 # <info::list[ <desc::string> , <lat::float> , <lon::float> ]>
 # <landmarks::dict{ <landmarkId::integer> : <info::list> }>
 # <landmark_database::dict{ <userId::integer> : <landmarks::dict> }>
-landmark_database = {}
+landmark_database = {"TEST_UID":{}}
 #################################################################
 #DATA BASE DEFINITIONS END
 #################################################################
@@ -105,14 +105,18 @@ while True:
         # checks users_database for already existing landmark, then creates landmark.
         elif op == "CREATE_LANDMARK":
                 try:
-                        #TODO: Create a landmark object for a user. #TEST_NEEDED
+                        #TODO: Create a landmark object for a user. #DONE
                         uid = users_database.get(user)
                         user_landmarks = landmark_database.get(uid)
-                        landmark_database[user].append(request_as_json["landmark"])
+                        landmark_tuple = createLandmark(request_as_json["landmark-object"], uid)
+                        landmark_database.get(uid)[landmark_tuple[0]] = landmark_tuple[1]
+                        print(landmark_database)
                         response = json.dumps({"op":"LANDMARK_CREATED", "userId":uid})
                         
                 except Exception as e:
-                        print(e)
+                        exc_type, exc_obj, exc_tb = sys.exc_info()
+                        print("Error: ",e)
+                        print("Type: ",exc_type,"Line: ", exc_tb.tb_lineno)
                         response = json.dumps({"op":"ERROR"})
 
         # request format : {"op":"FETCH_LANDMARKS", "username":<username>, "uid":<uid> }
@@ -126,7 +130,7 @@ while True:
                 try:
                         uid = users_database.get(user)
                         user_landmarks = landmark_database.get(uid)
-                        #TODO: Convert landmark list to string and set as response #TEST_NEEDED
+                        #TODO: Convert landmark list to string and set as response #DONE
                         response = json.dumps(user_landmarks)
 
                 except Exception as e:
