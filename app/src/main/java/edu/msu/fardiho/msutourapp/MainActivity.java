@@ -11,9 +11,10 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     //Test variables start
-    private String username = "user";
+    //TODO: Create TEST_USER and TEST_UID #DONE
+    private String username = "TEST_USER";
     private String password = "pass";
-    private String uid = "";
+    private String uid = "TEST_UID";
     EditText username_text;
     EditText password_text;
     EditText reenter_pass_text;
@@ -97,10 +98,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.username = username;
         loginSuccessful = value;
     }
-
-    public void notifyUser(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-
 }

@@ -30,7 +30,7 @@ users_database = {"TEST_USER":"TEST_UID"}
 # <info::list[ <desc::string> , <lat::float> , <lon::float> ]>
 # <landmarks::dict{ <landmarkId::integer> : <info::list> }>
 # <landmark_database::dict{ <userId::integer> : <landmarks::dict> }>
-landmark_database = {"TEST_UID":{}}
+landmark_database = {"TEST_UID":{"0987":["123","456","Hello World"]}}
 #################################################################
 #DATA BASE DEFINITIONS END
 #################################################################

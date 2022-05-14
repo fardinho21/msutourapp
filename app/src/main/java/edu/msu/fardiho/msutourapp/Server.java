@@ -1,6 +1,9 @@
 package edu.msu.fardiho.msutourapp;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.lang.Thread;
@@ -38,7 +41,7 @@ public class Server {
         return data;
     }
 
-    //operation: LOGIN, CREATE_USER, CREATE_LANDMARK
+    //operation: LOGIN, CREATE_USER, FETCH_LANDMARKS
     public void RequestToServer(String username, String password, String operation)
             throws JSONException {
         JSONObject data = generateJSONfromUserInput(username, password, operation);
@@ -48,8 +51,7 @@ public class Server {
         TH.start();
     }
 
-    //Sends to server username, create/delete landmark operation option,
-    //and landmark as a json string
+    //operation: CREATE_LANDMARK, DELETE_LANDMARK
     public void RequestToServer(String username, String userId, String operation, String landmark)
             throws JSONException {
         JSONObject data = generateJSONfromUserInput(username, userId, operation, landmark);
@@ -57,6 +59,10 @@ public class Server {
                 new ServerRequestThread(SERVER_PORT, SERVER_IP, data, this);
         Thread TH = new Thread(SerReqTH);
         TH.start();
+    }
+
+    public void NotifyUser(String message, Context context) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT);
     }
 
     //Setters

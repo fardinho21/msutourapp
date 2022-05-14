@@ -19,10 +19,10 @@ import java.util.Objects;
 public class CreateLndMrkDlg extends DialogFragment {
 
     private TourActivity tourActivity;
-    private TextView longTv;
-    private TextView latTv;
-    private TextView descriptionTv;
-    private TextView nameTv;
+    TextView longTv;
+    TextView latTv;
+    TextView descriptionTv;
+    TextView nameTv;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -53,44 +53,7 @@ public class CreateLndMrkDlg extends DialogFragment {
         return dlg;
     }
 
-    public void onDlgCreate() {
-        //TODO: Create landmark json object and send request to server #DONE
-        Server server = new Server();
-        String res = "";
-        try {
-            //create landmark object
-            Landmark lm = new Landmark(
-                    descriptionTv.getText().toString(),
-                    Float.parseFloat(latTv.getText().toString()),
-                    Float.parseFloat(longTv.getText().toString()),
-                    nameTv.getText().toString());
 
-            //send landmark to server
-            server.RequestToServer(
-                    tourActivity.getUsername(),
-                    tourActivity.getUserId(),
-                    "CREATE_LANDMARK",
-                    lm.getJSONString());
-
-            while (true) {
-                res = server.getServerResponse();
-                if (res != null && !res.equals("")) {
-                    JSONObject obj = new JSONObject(res); //JSONObject from string
-                    if (obj.getString("op").equals("LANDMARK_CREATED")) {
-                        //TODO: Pin landmark on map #DONE
-                        tourActivity.pinLandmark(lm);
-                        break;
-                    }
-                } else {
-                    tourActivity.notifyUser("Error");
-                }
-                Thread.currentThread().sleep(500);
-            }
-        } catch (JSONException | InterruptedException e) {
-            e.printStackTrace();
-            Log.e("CreateLndMrkDlg", Objects.requireNonNull(e.getMessage()));
-        }
-    }
 
     //setters
     public void setTourActivity(TourActivity ta){

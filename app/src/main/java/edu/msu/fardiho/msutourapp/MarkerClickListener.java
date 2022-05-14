@@ -25,7 +25,6 @@ public class MarkerClickListener implements GoogleMap.OnMarkerClickListener {
     public boolean onMarkerClick(Marker marker) {
 
         if(marker.getId().equals("m0")){
-            tourActivity.notifyUser("That's you!");
             return false;
         }
         //get landmark position

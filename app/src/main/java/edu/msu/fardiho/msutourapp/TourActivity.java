@@ -25,8 +25,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import java.util.ArrayList;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Objects;
+
+//TODO: Create landmark and delete landmark functions
 public class TourActivity extends FragmentActivity implements OnMapReadyCallback {
 
 
@@ -77,7 +83,7 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
             Log.i("username", username);
             Log.i("userId", userId);
         }
-        //TODO: Load landmarks from database
+        //TODO: Load landmarks from database for specific user
         Server server = new Server();
         try {
             server.RequestToServer(username, userId, "FETCH_LANDMARKS");
@@ -129,6 +135,46 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
         clmdlg.setTourActivity(this);
     }
 
+    public void onDlgCreate(View view) {
+        //TODO: Create landmark json object and send request to server ####TEST_NEEDED w/ backend
+        Server server = new Server();
+        String res = "";
+        try {
+            //create landmark object
+            Landmark lm = new Landmark(
+                    clmdlg.descriptionTv.getText().toString(),
+                    Float.parseFloat(clmdlg.latTv.getText().toString()),
+                    Float.parseFloat(clmdlg.longTv.getText().toString()),
+                    clmdlg.nameTv.getText().toString());
+
+            //send landmark to server
+            server.RequestToServer(
+                    getUsername(),
+                    getUserId(),
+                    "CREATE_LANDMARK",
+                    lm.getJSONString());
+
+            while (true) {
+                res = server.getServerResponse();
+                if (res != null && !res.equals("")) {
+                    JSONObject obj = new JSONObject(res); //JSONObject from string
+                    if (obj.getString("op").equals("LANDMARK_CREATED")) {
+                        //TODO: Pin landmark on map #DONE
+                        pinLandmark(lm);
+                        break;
+                    }
+                } else {
+                    server.NotifyUser("Error", this);
+                }
+                Thread.currentThread().sleep(500);
+            }
+
+        } catch (JSONException | InterruptedException e) {
+            e.printStackTrace();
+            Log.e("CreateLndMrkDlg", Objects.requireNonNull(e.getMessage()));
+        }
+    }
+
     //place landmark on the map
     public void pinLandmark(Landmark lm) { mMap.addMarker(lm.getMarkOps()); }
 
@@ -148,7 +194,9 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
         //if best provider is available check permissions,
         //set periodic location updates, and locate the user
         if (best != null){
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED )
+            {
                 return;
             }
             locationManager.requestLocationUpdates(best, 200, 0, activeListener);
@@ -161,10 +209,6 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void unregisterListeners() { locationManager.removeUpdates(activeListener); }
 
-    public void notifyUser(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT)
-                .show();
-    }
 
     //setters
     public void setUserLocation(Location location) {

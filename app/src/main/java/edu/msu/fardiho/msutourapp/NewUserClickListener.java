@@ -19,7 +19,7 @@ public class NewUserClickListener implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        //TODO: Use Server to send CREATE_USER request
+        //TODO: Use Server to send CREATE_USER request #Done
         String pw = ((EditText) mainActivity.findViewById(R.id.password_et))
                 .getText().toString();
         String repw = ((EditText) mainActivity.findViewById(R.id.reenterpass_et))
@@ -28,7 +28,7 @@ public class NewUserClickListener implements View.OnClickListener{
                 .getText().toString();
 
         if (!pw.equals(repw)) {
-            mainActivity.notifyUser("Passwords must match!");
+            Toast.makeText(mainActivity,"Passwords must match!", Toast.LENGTH_SHORT);
             return;
         }
 
@@ -40,11 +40,11 @@ public class NewUserClickListener implements View.OnClickListener{
                 if (res != null && !res.equals("")) {
                     JSONObject obj = new JSONObject(res);
                     if (obj.getString("op").equals("USER_CREATED")) {
-                        mainActivity.notifyUser("User Created Success");
+                        server.NotifyUser("User Created!", mainActivity);
                         break;
                     }
                 } else {
-                    mainActivity.notifyUser("Error Creating User");
+                    server.NotifyUser("Error Creating User!", mainActivity);
                 }
                 Thread.currentThread().sleep(500);
             }

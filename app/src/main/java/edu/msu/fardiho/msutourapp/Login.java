@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.Objects;
 
+//TODO: Login freezes when entering a non-existent user. Needs Fix.
 public class Login {
 
     private String username = "defaultUser";
@@ -36,7 +37,7 @@ public class Login {
                         break;
                     }
                 } else {
-                    mainActivity.notifyUser("Invalid Login");
+                    server.NotifyUser("Invalid Login",mainActivity);
                 }
                 Thread.currentThread().sleep(500);
             }
