@@ -164,7 +164,7 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
                         break;
                     }
                 } else {
-                    server.NotifyUser("Error", this);
+                    notifyUser("Error");
                 }
                 Thread.currentThread().sleep(500);
             }
@@ -209,6 +209,10 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void unregisterListeners() { locationManager.removeUpdates(activeListener); }
 
+    public void notifyUser(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT)
+                .show();
+    }
 
     //setters
     public void setUserLocation(Location location) {

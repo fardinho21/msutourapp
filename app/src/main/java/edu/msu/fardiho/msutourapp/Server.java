@@ -1,9 +1,6 @@
 package edu.msu.fardiho.msutourapp;
 
-import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.lang.Thread;
@@ -59,10 +56,6 @@ public class Server {
                 new ServerRequestThread(SERVER_PORT, SERVER_IP, data, this);
         Thread TH = new Thread(SerReqTH);
         TH.start();
-    }
-
-    public void NotifyUser(String message, Context context) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT);
     }
 
     //Setters

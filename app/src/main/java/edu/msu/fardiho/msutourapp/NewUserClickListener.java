@@ -28,7 +28,7 @@ public class NewUserClickListener implements View.OnClickListener{
                 .getText().toString();
 
         if (!pw.equals(repw)) {
-            Toast.makeText(mainActivity,"Passwords must match!", Toast.LENGTH_SHORT);
+            mainActivity.notifyUser("Passwords must match!");
             return;
         }
 
@@ -40,11 +40,11 @@ public class NewUserClickListener implements View.OnClickListener{
                 if (res != null && !res.equals("")) {
                     JSONObject obj = new JSONObject(res);
                     if (obj.getString("op").equals("USER_CREATED")) {
-                        server.NotifyUser("User Created!", mainActivity);
+                        mainActivity.notifyUser("User Created Success");
                         break;
                     }
                 } else {
-                    server.NotifyUser("Error Creating User!", mainActivity);
+                    mainActivity.notifyUser("Error Creating User");
                 }
                 Thread.currentThread().sleep(500);
             }

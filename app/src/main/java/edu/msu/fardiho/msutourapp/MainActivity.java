@@ -98,4 +98,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.username = username;
         loginSuccessful = value;
     }
+
+    public void notifyUser(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+
 }
