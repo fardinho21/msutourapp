@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.Objects;
 
+//TODO: Login freezes when entering non-existent user. Needs Fix
 public class Login {
 
     private String username = "defaultUser";
