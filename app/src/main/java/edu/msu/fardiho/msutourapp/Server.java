@@ -20,7 +20,8 @@ public class Server {
     }
 
     private JSONObject generateJSONfromUserInput(String username, String password, String operation)
-            throws JSONException {
+            throws JSONException
+    {
         JSONObject data = new JSONObject();
         data.put("op",operation);
         data.put("username", username);
@@ -29,7 +30,8 @@ public class Server {
     }
 
     private JSONObject generateJSONfromUserInput(String username, String userId, String operation, String lm)
-            throws JSONException {
+            throws JSONException
+    {
         JSONObject data = new JSONObject();
         data.put("op",operation);
         data.put("username", username);
@@ -40,7 +42,8 @@ public class Server {
 
     //operation: LOGIN, CREATE_USER, FETCH_LANDMARKS
     public void RequestToServer(String username, String password, String operation)
-            throws JSONException {
+            throws JSONException
+    {
         JSONObject data = generateJSONfromUserInput(username, password, operation);
         ServerRequestThread SerReqTH =
                 new ServerRequestThread(SERVER_PORT, SERVER_IP, data, this);
@@ -50,7 +53,8 @@ public class Server {
 
     //operation: CREATE_LANDMARK, DELETE_LANDMARK
     public void RequestToServer(String username, String userId, String operation, String landmark)
-            throws JSONException {
+            throws JSONException
+    {
         JSONObject data = generateJSONfromUserInput(username, userId, operation, landmark);
         ServerRequestThread SerReqTH =
                 new ServerRequestThread(SERVER_PORT, SERVER_IP, data, this);
@@ -60,12 +64,14 @@ public class Server {
 
     //Setters
     public void setUsername (String res)
-            throws JSONException{
+            throws JSONException
+    {
         JSONObject obj = new JSONObject(res);
         usernameResponse = obj.getString("username");
     }
     public void setUserId (String res)
-            throws JSONException{
+            throws JSONException
+    {
         JSONObject obj = new JSONObject(res);
         userIdResponse = obj.getString("userId");
     }
@@ -76,7 +82,8 @@ public class Server {
     //Getters
     public String getServerResponse() {return serverResponse;}
     public JSONObject getServerResponseObject()
-            throws JSONException {
+            throws JSONException
+    {
         return new JSONObject(serverResponse);
     }
     public String getUsername () {return usernameResponse;}

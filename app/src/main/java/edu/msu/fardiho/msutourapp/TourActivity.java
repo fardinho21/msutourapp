@@ -76,7 +76,7 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         Intent i = getIntent();
 
-        //load user name and userId
+        //TODO: username and userId have extra quotes. Get rid of them.
         if (i != null) {
             username = i.getExtras().getString("USERNAME");
             userId = i.getExtras().getString("UID");
@@ -136,7 +136,7 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void onDlgCreate(View view) {
-        //TODO: Create landmark json object and send request to server ####TEST_NEEDED w/ backend
+        //TODO: Create landmark json object and send request to server ####TEST_NEEDED w/ backend (WIP)
         Server server = new Server();
         String res = "";
         try {
@@ -152,14 +152,14 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
                     getUsername(),
                     getUserId(),
                     "CREATE_LANDMARK",
-                    lm.getJSONString());
+                    lm.getLandMarkString());
 
             while (true) {
                 res = server.getServerResponse();
                 if (res != null && !res.equals("")) {
                     JSONObject obj = new JSONObject(res); //JSONObject from string
                     if (obj.getString("op").equals("LANDMARK_CREATED")) {
-                        //TODO: Pin landmark on map #DONE
+
                         pinLandmark(lm);
                         break;
                     }

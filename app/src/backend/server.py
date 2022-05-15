@@ -108,7 +108,7 @@ while True:
                         #TODO: Create a landmark object for a user. #DONE
                         uid = users_database.get(user)
                         user_landmarks = landmark_database.get(uid)
-                        landmark_tuple = createLandmark(request_as_json["landmark-object"], uid)
+                        landmark_tuple = createLandmark(request_as_json["landmark"], uid)
                         landmark_database.get(uid)[landmark_tuple[0]] = landmark_tuple[1]
                         print(landmark_database)
                         response = json.dumps({"op":"LANDMARK_CREATED", "userId":uid})

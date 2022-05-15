@@ -33,7 +33,11 @@ public class Login {
                 if (res != null && !res.equals("")) {
                     JSONObject obj = new JSONObject(res); //JSONObject from string
                     if (obj.getString("op").equals("LOGIN_TRUE")) {
-                        LoginSuccessful(server.getUsername(),server.getUserId());
+                        //TODO: the next 2 lines could have a simpler implementation. #DONE
+                        String unm = obj.getString("username");
+                        String uid = obj.getString("userId");
+
+                        LoginSuccessful(unm, uid);
                         break;
                     }
                 } else {

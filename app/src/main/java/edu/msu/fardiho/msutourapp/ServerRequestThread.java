@@ -9,13 +9,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.io.PrintWriter;
 import java.io.BufferedReader;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ServerRequestThread implements Runnable{
 
     public static int portNumber;
     public static String hostName = "";
-    public static JSONObject data = null;
+    public static Object  data = null;
     private PrintWriter output;
     private BufferedReader input;
     private Server serverRef = null;
@@ -32,6 +34,7 @@ public class ServerRequestThread implements Runnable{
         if (data != null)
             this.data = data;
     }
+
 
     @SuppressLint("LongLogTag")
     @Override

@@ -2,6 +2,7 @@ package edu.msu.fardiho.msutourapp;
 
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Landmark {
@@ -24,9 +25,22 @@ public class Landmark {
         description = desc;
     }
 
-    public JSONObject getJSONObject() { return new JSONObject(); }
+    public JSONObject getJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("lat", String.valueOf(lat));
+            obj.put("lon", String.valueOf(lon));
+            obj.put("desc", description);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
 
-    public String getJSONString() { return new JSONObject().toString(); }
+    public String getLandMarkString() {
+        return lat + " " + lon + " : " + description;
+    }
+
 
     Landmark (String des, float la, float lo, String n) {
         lat = la; lon = lo; description = des; name = n;

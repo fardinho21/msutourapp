@@ -19,7 +19,6 @@ public class NewUserClickListener implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        //TODO: Use Server to send CREATE_USER request #Done
         String pw = ((EditText) mainActivity.findViewById(R.id.password_et))
                 .getText().toString();
         String repw = ((EditText) mainActivity.findViewById(R.id.reenterpass_et))

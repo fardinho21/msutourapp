@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (loginSuccessful) {
             //instantiate tour intent and bundle
-            //TODO: pass username and userId to tourActivity #DONE
             startTourActivity(username, uid);
         }
         else {
@@ -84,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void startTourActivity(String username, String uid) {
         Intent tour_intent = new Intent(this,TourActivity.class);
         Bundle b = new Bundle();
-        //TODO: store userId instead of password #DONE
         //store user data and bundle
         b.putString("USERNAME",username);
         b.putString("UID",uid);
