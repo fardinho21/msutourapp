@@ -76,7 +76,7 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         Intent i = getIntent();
 
-        //TODO: username and userId have extra quotes. Get rid of them.
+        //TODO: username and userId have extra quotes. Get rid of them. #DONE
         if (i != null) {
             username = i.getExtras().getString("USERNAME");
             userId = i.getExtras().getString("UID");
@@ -136,7 +136,7 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void onDlgCreate(View view) {
-        //TODO: Create landmark json object and send request to server ####TEST_NEEDED w/ backend (WIP)
+        //TODO: Create landmark json object and send request to server #DONE
         Server server = new Server();
         String res = "";
         try {

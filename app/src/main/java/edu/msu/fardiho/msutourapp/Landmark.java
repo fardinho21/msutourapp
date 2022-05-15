@@ -1,5 +1,6 @@
 package edu.msu.fardiho.msutourapp;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONException;
@@ -44,6 +45,9 @@ public class Landmark {
 
     Landmark (String des, float la, float lo, String n) {
         lat = la; lon = lo; description = des; name = n;
+        mark = new MarkerOptions()
+                .position(new LatLng(lat, lon))
+                .title(n);
     }
     Landmark () {
         lat = 0; lon = 0; description = ""; name = "";
