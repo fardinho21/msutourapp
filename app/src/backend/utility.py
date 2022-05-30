@@ -4,9 +4,9 @@ def createUserID(username, password):
     return str(abs(hash(username)) + abs(hash(password)))
 
 def parseLandmarkInfo(landmark_info):
+    #TODO: parse landmark string with name added #DONE
     info = landmark_info.split(":")
-    info[1] = info[1].strip()
-    info = info[0].strip().split(" ") + [info[1]]
+    info = info[0].strip().split(" ") + [info[1].strip()] + [info[2].strip()]
     return info
 
 def createLandmarkID(landmark_description, uid):

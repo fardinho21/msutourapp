@@ -26,10 +26,13 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Objects;
 
 //TODO: Create landmark and delete landmark functions
@@ -76,20 +79,13 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         Intent i = getIntent();
 
-        //TODO: username and userId have extra quotes. Get rid of them. #DONE
         if (i != null) {
             username = i.getExtras().getString("USERNAME");
             userId = i.getExtras().getString("UID");
             Log.i("username", username);
             Log.i("userId", userId);
         }
-        //TODO: Load landmarks from database for specific user
-        Server server = new Server();
-        try {
-            server.RequestToServer(username, userId, "FETCH_LANDMARKS");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        fetchLandmarks();
     }
 
     @Override
@@ -135,6 +131,27 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
         clmdlg.setTourActivity(this);
     }
 
+    public void fetchLandmarks() {
+        Server server = new Server();
+        String res = "";
+        try {
+            server.RequestToServer(username, userId, "FETCH_LANDMARKS");
+            while (true) {
+                res = server.getServerResponse();
+                if (res != null && !res.equals("")) {
+                    JSONObject obj = new JSONObject(res); //JSONObject from string
+                    if (true) {
+                        setLandmarkArrayList(convertLandMarkJSONtoArrayList(obj));
+                        break;
+                    }
+                }
+                Thread.currentThread().sleep(500);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void onDlgCreate(View view) {
         //TODO: Create landmark json object and send request to server #DONE
         Server server = new Server();
@@ -161,6 +178,7 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
                     if (obj.getString("op").equals("LANDMARK_CREATED")) {
 
                         pinLandmark(lm);
+                        clmdlg.dismiss();
                         break;
                     }
                 } else {
@@ -214,12 +232,33 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
                 .show();
     }
 
+    public ArrayList<Landmark> convertLandMarkJSONtoArrayList(JSONObject obj) {
+        ArrayList<Landmark> landmarks = new ArrayList<Landmark>();
+        for (Iterator<String> it = obj.keys(); it.hasNext(); ) {
+            String key = it.next();
+            try {
+                JSONArray sl = (JSONArray) obj.get(key);
+                landmarks.add(new Landmark(
+                        sl.getString(3),
+                        Float.parseFloat(sl.getString(1)),
+                        Float.parseFloat(sl.getString(2)),
+                        sl.getString(0)));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return landmarks;
+    }
+
     //setters
     public void setUserLocation(Location location) {
         user_latitude = location.getLatitude();
         user_longitude = location.getLongitude();
     }
 
+    public void setLandmarkArrayList(ArrayList<Landmark> landmarks) {
+        this.landmarkArrayList = landmarks;
+    }
     //getters
     public String getUsername() { return username; }
     public String getUserId() {return userId; }

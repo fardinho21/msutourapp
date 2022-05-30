@@ -3,13 +3,16 @@ package edu.msu.fardiho.msutourapp;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentActivity;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 import java.util.ArrayList;
 
-public class MarkerClickListener implements GoogleMap.OnMarkerClickListener {
+public class MarkerClickListener
+        implements GoogleMap.OnMarkerClickListener {
 
     private TourActivity tourActivity;
     private ArrayList<Landmark> landmarkArrayList = new ArrayList<Landmark>();
@@ -42,7 +45,7 @@ public class MarkerClickListener implements GoogleMap.OnMarkerClickListener {
             }
         }
         lndMrkDescDlg = new LndMrkDescDlg(lndmrk_name, lndmrk_desc);
-        //lndMrkDescDlg.show(getSupportFragmentManager(), "desc");
+        lndMrkDescDlg.show( tourActivity.getSupportFragmentManager(), "desc");
         return false;
     }
 }

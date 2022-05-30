@@ -27,10 +27,10 @@ users_database = {"TEST_USER":"TEST_UID"}
 #################################################################
 #DATA BASE DEFINITIONS START
 #################################################################
-# <info::list[ <desc::string> , <lat::float> , <lon::float> ]>
+# <info::list[ <name::string> , <desc::string> , <lat::float> , <lon::float> ]>
 # <landmarks::dict{ <landmarkId::integer> : <info::list> }>
 # <landmark_database::dict{ <userId::integer> : <landmarks::dict> }>
-landmark_database = {"TEST_UID":{"0987":["123","456","Hello World"]}}
+landmark_database = {"TEST_UID":{"0987":["Moutain View","37.3852","-122.0832","HNice place!"]}}
 #################################################################
 #DATA BASE DEFINITIONS END
 #################################################################
@@ -83,7 +83,6 @@ while True:
         # error format : { "op": "ERROR" }
         # checks users_database for already existing user, then creates user.
         elif op == "CREATE_USER":
-
                 if users_database.get(user):
                         printUserDB(users_database)
                         #response = '{\"op\":\"ERROR\"}'
@@ -102,12 +101,12 @@ while True:
         # landmark-string : "<lat> <lon> : <description>"
         # response format : { "op":"LANDMARK_CREATED", "userId":<uid> }
         # error format : { "op": "ERROR" }
-        # checks users_database for already existing landmark, then creates landmark.
+        # checks users_database for already existing landmark, then creates landmark. 
         elif op == "CREATE_LANDMARK":
                 try:
-                        #TODO: Create a landmark object for a user. #DONE
                         uid = users_database.get(user)
                         user_landmarks = landmark_database.get(uid)
+                        name = "" 
                         landmark_tuple = createLandmark(request_as_json["landmark"], uid)
                         landmark_database.get(uid)[landmark_tuple[0]] = landmark_tuple[1]
                         print(landmark_database)
@@ -130,7 +129,6 @@ while True:
                 try:
                         uid = users_database.get(user)
                         user_landmarks = landmark_database.get(uid)
-                        #TODO: Convert landmark list to string and set as response #DONE
                         response = json.dumps(user_landmarks)
 
                 except Exception as e:
