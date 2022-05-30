@@ -38,20 +38,18 @@ import java.util.Objects;
 //TODO: Create landmark and delete landmark functions
 public class TourActivity extends FragmentActivity implements OnMapReadyCallback {
 
-
-    LocationManager locationManager = null;
     private final ActiveListener activeListener = new ActiveListener();
     private GoogleMap mMap;
-    protected ArrayList<Landmark> landmarkArrayList = new ArrayList<Landmark>();
-    MarkerClickListener mkcl = new MarkerClickListener(this);
     private MarkerOptions user_markops;
     private Marker userMarker;
-    CreateLndMrkDlg clmdlg = new CreateLndMrkDlg();
     private double user_latitude =0;
     private double user_longitude =0;
     private String username;
     private String userId;
-
+    protected ArrayList<Landmark> landmarkArrayList = new ArrayList<Landmark>();
+    CreateLndMrkDlg createLandmarkDialog = new CreateLndMrkDlg();
+    MarkerClickListener markerClickListener = new MarkerClickListener();
+    LocationManager locationManager = null;
 
     private void obtainPermission() {
         ActivityCompat.requestPermissions(this,
@@ -78,6 +76,9 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
         // Force the screen to say on and bright
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         Intent i = getIntent();
+
+        markerClickListener.setTourActivity(this);
+        markerClickListener.setLandmarkArrayList(landmarkArrayList);
 
         if (i != null) {
             username = i.getExtras().getString("USERNAME");
@@ -108,7 +109,7 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
         for (Landmark l : landmarkArrayList) {
             pinLandmark(l);
         }
-        mMap.setOnMarkerClickListener(mkcl);
+        mMap.setOnMarkerClickListener(markerClickListener);
     }
 
     @Override
@@ -123,12 +124,12 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
         super.onPause();
     }
 
-    public void onDlgCancel(View view){ clmdlg.dismiss(); }
+    public void onDlgCancel(View view){ createLandmarkDialog.dismiss(); }
 
     //bring up create landmark dialog
     public void onCreateLandmark(View view) {
-        clmdlg.show(getSupportFragmentManager(), "create");
-        clmdlg.setTourActivity(this);
+        createLandmarkDialog.show(getSupportFragmentManager(), "create");
+        createLandmarkDialog.setTourActivity(this);
     }
 
     public void fetchLandmarks() {
@@ -153,16 +154,15 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void onDlgCreate(View view) {
-        //TODO: Create landmark json object and send request to server #DONE
         Server server = new Server();
         String res = "";
         try {
             //create landmark object
             Landmark lm = new Landmark(
-                    clmdlg.descriptionTv.getText().toString(),
-                    Float.parseFloat(clmdlg.latTv.getText().toString()),
-                    Float.parseFloat(clmdlg.longTv.getText().toString()),
-                    clmdlg.nameTv.getText().toString());
+                    createLandmarkDialog.descriptionTv.getText().toString(),
+                    Float.parseFloat(createLandmarkDialog.latTv.getText().toString()),
+                    Float.parseFloat(createLandmarkDialog.longTv.getText().toString()),
+                    createLandmarkDialog.nameTv.getText().toString());
 
             //send landmark to server
             server.RequestToServer(
@@ -178,7 +178,7 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
                     if (obj.getString("op").equals("LANDMARK_CREATED")) {
 
                         pinLandmark(lm);
-                        clmdlg.dismiss();
+                        createLandmarkDialog.dismiss();
                         break;
                     }
                 } else {
@@ -257,7 +257,8 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void setLandmarkArrayList(ArrayList<Landmark> landmarks) {
-        this.landmarkArrayList = landmarks;
+        landmarkArrayList = landmarks;
+        markerClickListener.setLandmarkArrayList(landmarkArrayList);
     }
     //getters
     public String getUsername() { return username; }

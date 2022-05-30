@@ -16,6 +16,8 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.util.Objects;
 
+
+//TODO: Add option to upload image from gallery or to take photo
 public class CreateLndMrkDlg extends DialogFragment {
 
     private TourActivity tourActivity;
@@ -53,14 +55,9 @@ public class CreateLndMrkDlg extends DialogFragment {
         return dlg;
     }
 
-
-
     //setters
     public void setTourActivity(TourActivity ta){
         tourActivity = ta;
     }
-    //getters
-
-
 
 }

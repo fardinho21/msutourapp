@@ -16,14 +16,17 @@ public class MarkerClickListener
 
     private TourActivity tourActivity;
     private ArrayList<Landmark> landmarkArrayList = new ArrayList<Landmark>();
+    LndMrkDescDlg lndMrkDescDlg;
+
+    //TODO: Display image with description onMarkerClick
+
+    public MarkerClickListener() {}
 
     public MarkerClickListener(TourActivity ta) {
-        tourActivity = ta;
-        landmarkArrayList = ta.getLandmarkArrayList();
+        setTourActivity(ta);
+        setLandmarkArrayList(ta.getLandmarkArrayList());
     }
 
-
-    LndMrkDescDlg lndMrkDescDlg;
     @Override
     public boolean onMarkerClick(Marker marker) {
 
@@ -39,13 +42,18 @@ public class MarkerClickListener
         for (Landmark l : landmarkArrayList){
             if ( marker.getTitle().equals(l.getName())){
                 lndmrk_name = l.getName();
-                if (l.getDesc() != null){
+                if (l.getDesc() != null)
                     lndmrk_desc = l.getDesc();
-                }
             }
         }
         lndMrkDescDlg = new LndMrkDescDlg(lndmrk_name, lndmrk_desc);
         lndMrkDescDlg.show( tourActivity.getSupportFragmentManager(), "desc");
         return false;
     }
+
+    //Setters
+    public void setTourActivity(TourActivity ta) {tourActivity = ta;}
+    public void setLandmarkArrayList(ArrayList<Landmark> lmarray) {landmarkArrayList = lmarray;}
+
+
 }
