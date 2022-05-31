@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,6 +31,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.sql.Array;
 import java.util.ArrayList;
@@ -46,6 +49,7 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
     private double user_longitude =0;
     private String username;
     private String userId;
+    private boolean deleteMode = false;
     protected ArrayList<Landmark> landmarkArrayList = new ArrayList<Landmark>();
     CreateLndMrkDlg createLandmarkDialog = new CreateLndMrkDlg();
     MarkerClickListener markerClickListener = new MarkerClickListener();
@@ -130,6 +134,23 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
     public void onCreateLandmark(View view) {
         createLandmarkDialog.show(getSupportFragmentManager(), "create");
         createLandmarkDialog.setTourActivity(this);
+    }
+
+    public void onDeleteLandmark(View view) {
+        //TODO: deleteMessage textview is null
+        ImageButton deletelm = view.findViewById(R.id.deleteLandmark);
+        TextView deleteMessage = (TextView) view.findViewById(R.id.deleteMessage);
+        if (!deleteMode) {
+            deletelm.setImageResource(R.drawable.deletelm_open);
+            //deleteMessage.setVisibility(View.VISIBLE);
+            deleteMode = true;
+        } else {
+            deletelm.setImageResource(R.drawable.deletelm);
+            //deleteMessage.setVisibility(View.INVISIBLE);
+            deleteMode = false;
+        }
+
+
     }
 
     public void fetchLandmarks() {

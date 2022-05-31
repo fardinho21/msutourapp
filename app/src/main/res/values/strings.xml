@@ -4,7 +4,6 @@
     <string name="password">Enter Password</string>
     <string name="login">Login</string>
 
-
     <string name="create_lm">Create Landmark</string>
     <string name="lm_desc">Description</string>
     <string name="cancel">Cancel</string>
@@ -16,7 +15,7 @@
 
 
     <string name="title_activity_tour">Map</string>
-
+    <string name="delete_lm">Select a landmark to delete...</string>
     <string name="google_maps_key">AIzaSyD7BqFGJOJWzrkqeNXa5-krGJGF3Oy3a5Q</string>
 
     <string name="loggingin">Logging in...</string>
