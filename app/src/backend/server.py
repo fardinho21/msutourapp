@@ -103,6 +103,7 @@ while True:
         # error format : { "op": "ERROR" }
         # checks users_database for already existing landmark, then creates landmark. 
         elif op == "CREATE_LANDMARK":
+                #TODO: Server error when creating landmark after deleting one
                 try:
                         uid = users_database.get(user)
                         user_landmarks = landmark_database.get(uid)
@@ -151,6 +152,10 @@ while True:
                 except Exception as e:
                         print(e)
                         response = json.dumps({"op":"ERROR"})
+        
+        else:
+                response = json.dumps({"op":"ERROR: Invalid request"})
+
         complete = True
         if complete:
                 c.send(response.encode('utf-8'))

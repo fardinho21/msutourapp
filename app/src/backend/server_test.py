@@ -25,10 +25,11 @@ while True:
     #DELETE_LANDMARK
     elif test_request == "DELETE_LANDMARK":
         request = json.dumps({"op":"DELETE_LANDMARK","username":"TEST_USER","uid":"TEST_UID","landmarkId":"0987"})
-
+    else:
+        print("Invalid request")
 
 
     s.send(request.encode('utf-8'))
     response = s.recv(1024)
-    print("server response: ", type(response.decode()))
+    print("server response: ", response.decode())
 

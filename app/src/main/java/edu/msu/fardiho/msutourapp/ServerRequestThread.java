@@ -35,7 +35,6 @@ public class ServerRequestThread implements Runnable{
             this.data = data;
     }
 
-
     @SuppressLint("LongLogTag")
     @Override
     public final void run() {

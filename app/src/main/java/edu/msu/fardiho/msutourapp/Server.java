@@ -36,7 +36,10 @@ public class Server {
         data.put("op",operation);
         data.put("username", username);
         data.put("userId", userId);
-        data.put("landmark", lm);
+        if (operation == "DELETE_LANDMARK")
+            data.put("landmarkId", lm);
+        else
+            data.put("landmark", lm);
         return data;
     }
 

@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Objects;
 
-//TODO: Create landmark and delete landmark functions
 public class TourActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private final ActiveListener activeListener = new ActiveListener();
@@ -154,14 +153,11 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    protected void deleteLandmark(Landmark lm) {
-        //TODO: Test delete landmark
-        //TODO: deleteLandmark should requestToServer.
-        //TODO: Server should return updated landmark array
+    protected boolean deleteLandmark(Landmark lm) {
         Server server = new Server();
         String res = "";
         try {
-            server.RequestToServer(username, userId, "DELETE_LANDMARK");
+            server.RequestToServer(username, userId, "DELETE_LANDMARK", lm.getDataBaseID());
             while (true) {
                 res = server.getServerResponse();
                 if (res != null && !res.equals("")) {
@@ -176,6 +172,10 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        if (res.contains("LANDMARK_DELETE_SUCCESS"))
+            return true;
+        return false;
     }
 
     public void fetchLandmarks() {
@@ -199,6 +199,7 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    //TODO: Server error when creating a landmark after deleting one
     public void onDlgCreate(View view) {
         Server server = new Server();
         String res = "";

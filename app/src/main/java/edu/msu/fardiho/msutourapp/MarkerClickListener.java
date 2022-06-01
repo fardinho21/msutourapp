@@ -42,7 +42,11 @@ public class MarkerClickListener
         Landmark found = findLandmarkFromMarker(marker);
 
         if (tourActivity.getDeleteModeState()) {
-            tourActivity.deleteLandmark(found);
+            boolean result = tourActivity.deleteLandmark(found);
+            if (result) {
+                marker.remove();
+            }
+
         } else {
             name += found.getName();
             desc += found.getDesc();

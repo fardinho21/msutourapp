@@ -48,6 +48,7 @@ public class Landmark {
         }
         return obj;
     }
+    public String getDataBaseID() {return dataBaseID;}
 
     //Setters
     public void setDataBaseID(String id) {dataBaseID = id;}
