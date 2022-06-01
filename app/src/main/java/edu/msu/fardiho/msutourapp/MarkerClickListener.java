@@ -48,7 +48,7 @@ public class MarkerClickListener
             desc += found.getDesc();
             showLandmarkInfoDialog(name, desc);
         }
-
+        //TEST COMMENT
         return false;
     }
 
