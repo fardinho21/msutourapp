@@ -135,6 +135,22 @@ while True:
                         print(e)
                         response = json.dumps({"op":"ERROR"})
         
+        # request format : {"op":"DELETE_LANDMARK","username":<username>, "uid":<uid>, "landmarkId":<landmarkId>}
+        # response format : {"op":"LANDMARK_DELETE_SUCCESS", "userId":<uid>,
+        # "landmarks": <comma separated landmark-json-strings>}
+        # checks user databser for existing user
+        # deletes landmark for specific user
+        # returns the landmark array
+        elif op == "DELETE_LANDMARK":
+                try:
+                        lmId = request_as_json["landmarkId"]
+                        uid = users_database.get(user)
+                        user_landmarks = landmark_database.get(uid)
+                        del user_landmarks[lmId]
+                        response = json.dumps({"op":"LANDMARK_DELETE_SUCCESS","userId":uid,"landmarks":user_landmarks})
+                except Exception as e:
+                        print(e)
+                        response = json.dumps({"op":"ERROR"})
         complete = True
         if complete:
                 c.send(response.encode('utf-8'))

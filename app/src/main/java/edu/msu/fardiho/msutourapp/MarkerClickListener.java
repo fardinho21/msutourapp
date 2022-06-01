@@ -21,7 +21,6 @@ public class MarkerClickListener
     //TODO: Display image with description onMarkerClick
 
     public MarkerClickListener() {}
-
     public MarkerClickListener(TourActivity ta) {
         setTourActivity(ta);
         setLandmarkArrayList(ta.getLandmarkArrayList());
@@ -33,21 +32,23 @@ public class MarkerClickListener
         if(marker.getId().equals("m0")){
             return false;
         }
+
         //get landmark position
         LatLng latLng = marker.getPosition();
         Log.i("latlng", latLng.toString());
-        String lndmrk_name = "Name";
-        String lndmrk_desc = "Description";
+        String name = "Name: ";
+        String desc = "Description: ";
         //find the landmark in the array
-        for (Landmark l : landmarkArrayList){
-            if ( marker.getTitle().equals(l.getName())){
-                lndmrk_name = l.getName();
-                if (l.getDesc() != null)
-                    lndmrk_desc = l.getDesc();
-            }
+        Landmark found = findLandmarkFromMarker(marker);
+
+        if (tourActivity.getDeleteModeState()) {
+            tourActivity.deleteLandmark(found);
+        } else {
+            name += found.getName();
+            desc += found.getDesc();
+            showLandmarkInfoDialog(name, desc);
         }
-        lndMrkDescDlg = new LndMrkDescDlg(lndmrk_name, lndmrk_desc);
-        lndMrkDescDlg.show( tourActivity.getSupportFragmentManager(), "desc");
+
         return false;
     }
 
@@ -55,5 +56,16 @@ public class MarkerClickListener
     public void setTourActivity(TourActivity ta) {tourActivity = ta;}
     public void setLandmarkArrayList(ArrayList<Landmark> lmarray) {landmarkArrayList = lmarray;}
 
-
+    //utility
+    private Landmark findLandmarkFromMarker(Marker marker) {
+        for (Landmark l : landmarkArrayList){
+            if ( marker.getTitle().equals(l.getName()))
+                return l;
+        }
+        return null;
+    }
+    private void showLandmarkInfoDialog(String name, String desc) {
+        lndMrkDescDlg = new LndMrkDescDlg(name, desc);
+        lndMrkDescDlg.show( tourActivity.getSupportFragmentManager(), "desc");
+    }
 }

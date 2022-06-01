@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -42,6 +43,7 @@ import java.util.Objects;
 public class TourActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private final ActiveListener activeListener = new ActiveListener();
+    private TextView deleteMessage;
     private GoogleMap mMap;
     private MarkerOptions user_markops;
     private Marker userMarker;
@@ -90,6 +92,9 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
             Log.i("username", username);
             Log.i("userId", userId);
         }
+
+        deleteMessage = (TextView) findViewById(R.id.deleteMessage);
+        deleteMessage.setVisibility(View.INVISIBLE);
         fetchLandmarks();
     }
 
@@ -137,20 +142,40 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void onDeleteLandmark(View view) {
-        //TODO: deleteMessage textview is null
-        ImageButton deletelm = view.findViewById(R.id.deleteLandmark);
-        TextView deleteMessage = (TextView) view.findViewById(R.id.deleteMessage);
+        ImageButton deletelm = (ImageButton) findViewById(R.id.deleteLandmark);
         if (!deleteMode) {
             deletelm.setImageResource(R.drawable.deletelm_open);
-            //deleteMessage.setVisibility(View.VISIBLE);
+            deleteMessage.setVisibility(View.VISIBLE);
             deleteMode = true;
         } else {
             deletelm.setImageResource(R.drawable.deletelm);
-            //deleteMessage.setVisibility(View.INVISIBLE);
+            deleteMessage.setVisibility(View.INVISIBLE);
             deleteMode = false;
         }
+    }
 
-
+    protected void deleteLandmark(Landmark lm) {
+        //TODO: Test delete landmark
+        //TODO: deleteLandmark should requestToServer.
+        //TODO: Server should return updated landmark array
+        Server server = new Server();
+        String res = "";
+        try {
+            server.RequestToServer(username, userId, "DELETE_LANDMARK");
+            while (true) {
+                res = server.getServerResponse();
+                if (res != null && !res.equals("")) {
+                    JSONObject obj = new JSONObject(res); //JSONObject from string
+                    if (true) {
+                        setLandmarkArrayList(convertLandMarkJSONtoArrayList(obj));
+                        break;
+                    }
+                }
+                Thread.currentThread().sleep(500);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void fetchLandmarks() {
@@ -259,11 +284,13 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
             String key = it.next();
             try {
                 JSONArray sl = (JSONArray) obj.get(key);
-                landmarks.add(new Landmark(
+                Landmark lm = new Landmark(
                         sl.getString(3),
                         Float.parseFloat(sl.getString(1)),
                         Float.parseFloat(sl.getString(2)),
-                        sl.getString(0)));
+                        sl.getString(0));
+                lm.setDataBaseID(key);
+                landmarks.add(lm);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -276,12 +303,13 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
         user_latitude = location.getLatitude();
         user_longitude = location.getLongitude();
     }
-
     public void setLandmarkArrayList(ArrayList<Landmark> landmarks) {
         landmarkArrayList = landmarks;
         markerClickListener.setLandmarkArrayList(landmarkArrayList);
     }
+
     //getters
+    public boolean getDeleteModeState() {return deleteMode;}
     public String getUsername() { return username; }
     public String getUserId() {return userId; }
     public double getUserLongitude(){ return user_longitude; }

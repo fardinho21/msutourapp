@@ -11,6 +11,7 @@ public class Landmark {
     private MarkerOptions mark;
     private String description;
     private String name;
+    private String dataBaseID;
     private float lat;
     private float lon;
 
@@ -49,6 +50,7 @@ public class Landmark {
     }
 
     //Setters
+    public void setDataBaseID(String id) {dataBaseID = id;}
     public void setMarkOps(MarkerOptions m) {
         mark = m;
     }

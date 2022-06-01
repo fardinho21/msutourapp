@@ -22,13 +22,12 @@
 
     <TextView
         android:id="@+id/deleteMessage"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/delete_lm"
         android:padding="100px"
-        android:textStyle="bold|italic"
+        android:text="@string/delete_lm"
         android:textSize="25dp"
-        android:visibility="invisible"/>
+        android:textStyle="bold|italic" />
 
     <LinearLayout
         android:id="@+id/uiLayout"
