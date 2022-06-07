@@ -6,7 +6,7 @@ def createUserID(username, password):
 def parseLandmarkInfo(landmark_info):
     #TODO: parse landmark string with name added #DONE
     info = landmark_info.split(":")
-    info = info[0].strip().split(" ") + [info[1].strip()] + [info[2].strip()]
+    info = info[0].strip().split(" ") + info[1].strip().split(" ")
     return info
 
 def createLandmarkID(landmark_description, uid):

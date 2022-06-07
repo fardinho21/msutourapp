@@ -225,6 +225,7 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
                     if (obj.getString("op").equals("LANDMARK_CREATED")) {
 
                         pinLandmark(lm);
+                        addLandmarkToArrayList(lm);
                         createLandmarkDialog.dismiss();
                         break;
                     }
@@ -322,6 +323,7 @@ public class TourActivity extends FragmentActivity implements OnMapReadyCallback
                 this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED;
     }
+    private void addLandmarkToArrayList(Landmark lm) {landmarkArrayList.add(lm);}
 
 
 }

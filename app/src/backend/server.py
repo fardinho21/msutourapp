@@ -107,6 +107,7 @@ while True:
                 try:
                         uid = users_database.get(user)
                         user_landmarks = landmark_database.get(uid)
+                        print(user_landmarks)
                         name = "" 
                         landmark_tuple = createLandmark(request_as_json["landmark"], uid)
                         landmark_database.get(uid)[landmark_tuple[0]] = landmark_tuple[1]
@@ -148,6 +149,7 @@ while True:
                         uid = users_database.get(user)
                         user_landmarks = landmark_database.get(uid)
                         del user_landmarks[lmId]
+                        print(user_landmarks)
                         response = json.dumps({"op":"LANDMARK_DELETE_SUCCESS","userId":uid,"landmarks":user_landmarks})
                 except Exception as e:
                         print(e)

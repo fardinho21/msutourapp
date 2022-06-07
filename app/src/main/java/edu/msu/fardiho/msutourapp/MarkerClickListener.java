@@ -13,7 +13,8 @@ import java.util.ArrayList;
 
 public class MarkerClickListener
         implements GoogleMap.OnMarkerClickListener {
-
+    //TODO: Decouple landmarkArrayList from markerclick listener
+    //TODO: TourActivity should be responsible for handling the landmarkArrayList
     private TourActivity tourActivity;
     private ArrayList<Landmark> landmarkArrayList = new ArrayList<Landmark>();
     LndMrkDescDlg lndMrkDescDlg;
